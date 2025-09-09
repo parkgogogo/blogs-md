@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "d4cc4c200c5ef3d6",
+        "id": "2d0a62371d4db450",
         "type": "tabs",
         "children": [
           {
-            "id": "f15c26fbec985cfb",
+            "id": "c96cd460f660aef3",
             "type": "leaf",
             "state": {
-              "type": "split-diff-view",
+              "type": "markdown",
               "state": {
-                "aFile": "Excalidraw/Drawing 2025-08-10 22.56.21.excalidraw.md",
-                "bFile": "Excalidraw/Drawing 2025-08-10 22.56.21.excalidraw.md",
-                "aRef": ""
+                "file": "docs/test.md.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "diff",
-              "title": "Diff: Drawing 2025-08-10 22.56.21.excalidraw"
+              "icon": "lucide-file",
+              "title": "test.md"
             }
           }
         ]
@@ -166,7 +166,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 642.5
+    "width": 523.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -180,26 +181,41 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "80b4ea59001ab203",
+  "active": "c96cd460f660aef3",
   "lastOpenFiles": [
-    "attachment/IMG_1942.webp",
-    "attachment/IMG_1941.webp",
-    "Excalidraw/Drawing 2025-08-10 22.56.21.excalidraw.md",
-    "Excalidraw/Drawing 2025-08-10 22.56.21.excalidraw.svg",
-    "README.md",
-    "docs/作/Blog.next.md",
-    "Excalidraw",
     "docs/食/COMMUNE幻师.md",
     "docs/行/Feeds.md",
     "docs/思/留下痕迹.md",
-    "attachment/IMG_1946.jpeg",
-    "attachment/IMG_1945.webp",
+    "docs/作/Blog.next.md",
+    "Excalidraw/demo.excalidraw.md",
+    "Excalidraw/Scripts/Downloaded/Auto Layout.md",
+    "Excalidraw/Scripts/Downloaded/Auto Layout.svg",
+    "Excalidraw/Scripts/Downloaded/Change shape of selected elements.md",
+    "Excalidraw/Scripts/Downloaded/Change shape of selected elements.svg",
+    "Excalidraw/Scripts/Downloaded/Normalize Selected Arrows.md",
+    "Excalidraw/Scripts/Downloaded/Normalize Selected Arrows.svg",
+    "Excalidraw/Scripts/Downloaded/Connect elements.md",
+    "Excalidraw/Scripts/Downloaded/Connect elements.svg",
+    "Excalidraw/Scripts/Downloaded/Boolean Operations.svg",
+    "Excalidraw/Scripts/Downloaded/Boolean Operations.md",
+    "Excalidraw/Scripts/Downloaded/Mindmap format.md",
+    "Excalidraw/Scripts/Downloaded/Mindmap format.svg",
+    "Excalidraw/Scripts/Downloaded/Invert colors.svg",
+    "Excalidraw/Scripts/Downloaded/Invert colors.md",
+    "Excalidraw/Scripts/Downloaded/Grid Selected Images.svg",
+    "Excalidraw/Scripts/Downloaded/Grid Selected Images.md",
+    "Excalidraw/Scripts/Downloaded/Fixed spacing.svg",
+    "Excalidraw/Scripts/Downloaded/Fixed spacing.md",
+    "Excalidraw/Scripts/Downloaded",
+    "Excalidraw/Scripts",
+    "Excalidraw/Drawing 2025-08-10 23.37.57.excalidraw.md",
+    "docs/test.md.md",
+    "README.md",
+    "attachment/IMG_1942.webp",
+    "Excalidraw",
     "docs/食",
     "Untitled.canvas",
-    "attachment/CleanShot 2025-08-09 at 13.45.17@2x.webp",
     "attachment",
-    "CleanShot 2025-08-09 at 13.45.17@2x.webp",
-    "CleanShot 2025-08-09 at 13.45.17@2x.png",
     "docs/作",
     "test.md.md",
     "docs/行"

@@ -12,11 +12,11 @@
 - [x] Markdown 正确渲染
 - [ ] 🏷️ 标签系统
 - [x] attachment 静态资源代理
-- [ ] 图片资源 markdown 渲染优化
+- [x] 图片资源 markdown 渲染优化
 - [ ] excalidraw canvas
 ## RSS
-- [ ] post rss
-- [ ] word card rss
+- [x] post rss
+- [x] word card rss & daily words page
 ## Stacks Show
 - [ ] ThreeJS
 - [ ] SEO
