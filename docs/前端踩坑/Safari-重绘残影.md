@@ -1,4 +1,4 @@
-#frontend #safari #webkit #rendering #pitfall
+#frontend #webkit #pitfall
 
 ## Safari 的「残影」不是样式问题
 
