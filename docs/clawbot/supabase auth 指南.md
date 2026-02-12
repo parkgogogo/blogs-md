@@ -44,6 +44,15 @@ sequenceDiagram
 
 这一步只负责把用户带去 OAuth，不在这里存会话。
 
+```ts
+const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`;
+
+await supabase.auth.signInWithOAuth({
+  provider: "github",
+  options: { redirectTo },
+});
+```
+
 ### 回调页：`/auth/callback`
 
 回调页做了三件关键事：
@@ -53,6 +62,22 @@ sequenceDiagram
 - 把 `accessToken/refreshToken` POST 给 `/api/auth/session`
 
 > 真正落 Cookie 的动作在服务端 API，而不是在浏览器 JS 里直接写。
+
+```ts
+const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+if (error || !data.session?.access_token || !data.session?.refresh_token) {
+  throw new Error("登录失败：无法获取会话");
+}
+
+await fetch("/api/auth/session", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    accessToken: data.session.access_token,
+    refreshToken: data.session.refresh_token,
+  }),
+});
+```
 
 ### 会话落地：`/api/auth/session`
 
@@ -72,6 +97,27 @@ Cookie 策略：
 
 这让前端脚本拿不到 token，减少 XSS 下 token 泄露风险。
 
+```ts
+const response = NextResponse.json({ user: data.user });
+
+setAuthCookies(response, {
+  accessToken: payload.accessToken,
+  refreshToken: payload.refreshToken,
+});
+
+return response;
+```
+
+```ts
+response.cookies.set("sb-access-token", accessToken, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+  path: "/",
+  maxAge: 60 * 60,
+});
+```
+
 ### 自动续期：`middleware.ts`
 
 中间件只匹配：`/words/:path*`。
@@ -82,6 +128,24 @@ Cookie 策略：
 - `shouldRefreshAccessToken` 判断 access token 是否快过期（阈值约 15 分钟）
 - 若需续期：`refreshAuthSession(refreshToken)`
 - 成功则回写新 token；失败则清空 cookie
+
+```ts
+const accessToken = request.cookies.get("sb-access-token")?.value ?? null;
+const refreshToken = request.cookies.get("sb-refresh-token")?.value ?? null;
+
+if (!refreshToken || !shouldRefreshAccessToken(accessToken)) {
+  return response;
+}
+
+const refreshed = await refreshAuthSession(refreshToken);
+if (!refreshed) {
+  // clear cookies
+  return response;
+}
+
+response.cookies.set("sb-access-token", refreshed.accessToken, { httpOnly: true, path: "/" });
+response.cookies.set("sb-refresh-token", refreshed.refreshToken, { httpOnly: true, path: "/" });
+```
 
 ```mermaid
 sequenceDiagram
@@ -122,6 +186,16 @@ sequenceDiagram
 
 因此 SSR 页面（如词库页面）可直接在服务端判定身份。
 
+```ts
+export const requireAuth = async () => {
+  const auth = await getServerAuth();
+  if (!auth) {
+    redirect(`/login?next=${encodeURIComponent(await resolveNextPath())}`);
+  }
+  return auth;
+};
+```
+
 ### API 鉴权（统一取 token）
 
 `lib/auth.ts` 提供统一取 token 方法：
@@ -133,6 +207,19 @@ sequenceDiagram
   - 从 cookie 读取
 
 这样 API 既能支持浏览器 cookie 场景，也能支持显式 Bearer token 场景（如扩展端）。
+
+```ts
+export const getAccessTokenFromRequest = (request: Request) => {
+  const headerToken = request.headers
+    .get("authorization")
+    ?.replace(/^Bearer\s+/i, "")
+    .trim();
+  if (headerToken) return headerToken;
+
+  const cookies = parseCookieHeader(request.headers.get("cookie"));
+  return cookies.get("sb-access-token") ?? null;
+};
+```
 
 ### 方案优点与注意点
 
