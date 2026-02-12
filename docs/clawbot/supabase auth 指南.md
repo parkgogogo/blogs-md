@@ -1,19 +1,15 @@
-# blog.me 中 Supabase Auth 实现详解（含 Mermaid 流程图）
-
 > 这篇文档按当前项目代码实现拆解：登录、回调、会话落库（Cookie）、中间件续期、服务端鉴权与 API 鉴权。
 
-## 0. 设计目标
+### 设计目标
 
 这套认证方案的核心目标是：
 
-1. **前端登录体验顺滑**：浏览器端走 Supabase OAuth（GitHub）
-2. **服务端可安全鉴权**：通过 `httpOnly` Cookie 持有 token
-3. **自动续期减少掉线**：中间件在 access token 将过期时自动 refresh
-4. **SSR + API 统一鉴权**：页面与接口都能复用鉴权逻辑
+- **前端登录体验顺滑**：浏览器端走 Supabase OAuth（GitHub）
+- **服务端可安全鉴权**：通过 `httpOnly` Cookie 持有 token
+- **自动续期减少掉线**：中间件在 access token 将过期时自动 refresh
+- **SSR + API 统一鉴权**：页面与接口都能复用鉴权逻辑
 
----
-
-## 1. 认证主流程（登录到进入业务页）
+### 认证主流程（登录到进入业务页）
 
 ```mermaid
 sequenceDiagram
@@ -39,9 +35,7 @@ sequenceDiagram
   M-->>P: 未过期直通 / 过期则 refresh 后放行
 ```
 
----
-
-## 2. 登录入口：`/login`
+### 登录入口：`/login`
 
 登录页是浏览器端组件，关键动作：
 
@@ -50,21 +44,17 @@ sequenceDiagram
 
 这一步只负责把用户带去 OAuth，不在这里存会话。
 
----
-
-## 3. 回调页：`/auth/callback`
+### 回调页：`/auth/callback`
 
 回调页做了三件关键事：
 
-1. 读 URL 中的 `code`（或 hash token）
-2. 调 `supabase.auth.exchangeCodeForSession(code)` 换取会话
-3. 把 `accessToken/refreshToken` POST 给 `/api/auth/session`
+- 读 URL 中的 `code`（或 hash token）
+- 调 `supabase.auth.exchangeCodeForSession(code)` 换取会话
+- 把 `accessToken/refreshToken` POST 给 `/api/auth/session`
 
-> 也就是说，**真正落 Cookie 的动作在服务端 API**，不是在浏览器 JS 里直接写。
+> 真正落 Cookie 的动作在服务端 API，而不是在浏览器 JS 里直接写。
 
----
-
-## 4. 会话落地：`/api/auth/session`
+### 会话落地：`/api/auth/session`
 
 该接口做“校验 + 写 Cookie”两步：
 
@@ -82,18 +72,16 @@ Cookie 策略：
 
 这让前端脚本拿不到 token，减少 XSS 下 token 泄露风险。
 
----
+### 自动续期：`middleware.ts`
 
-## 5. 自动续期：`middleware.ts`
+中间件只匹配：`/words/:path*`。
 
-中间件只匹配：`/words/:path*`
+核心逻辑：
 
-逻辑：
-
-1. 读 cookie 里的 access/refresh token
-2. `shouldRefreshAccessToken` 判断 access token 是否快过期（阈值约 15 分钟）
-3. 若需续期：`refreshAuthSession(refreshToken)`
-4. 成功则回写新 token；失败则清空 cookie
+- 读 cookie 里的 access/refresh token
+- `shouldRefreshAccessToken` 判断 access token 是否快过期（阈值约 15 分钟）
+- 若需续期：`refreshAuthSession(refreshToken)`
+- 成功则回写新 token；失败则清空 cookie
 
 ```mermaid
 flowchart TD
@@ -111,9 +99,7 @@ flowchart TD
 
 这层保证了“用户几乎无感续期”。
 
----
-
-## 6. 服务端页面鉴权：`lib/auth/server.ts`
+### 服务端页面鉴权：`lib/auth/server.ts`
 
 服务端读取 `sb-access-token` 后调用 `getUserFromAccessToken`。
 
@@ -123,11 +109,9 @@ flowchart TD
 
 因此 SSR 页面（如词库页面）可直接在服务端判定身份。
 
----
+### API 鉴权（统一取 token）
 
-## 7. API 鉴权（统一取 token）
-
-`lib/auth.ts` 里提供统一方法：
+`lib/auth.ts` 提供统一取 token 方法：
 
 - `getAccessTokenFromRequest`
   - 优先读 `Authorization: Bearer ...`
@@ -137,28 +121,24 @@ flowchart TD
 
 这样 API 既能支持浏览器 cookie 场景，也能支持显式 Bearer token 场景（如扩展端）。
 
----
+### 方案优点与注意点
 
-## 8. 为什么这套方案靠谱
-
-### 优点
+优点：
 
 - **安全性更高**：token 不暴露给前端业务脚本（httpOnly）
 - **SSR 友好**：服务端可直接鉴权和重定向
 - **体验好**：自动 refresh，减少频繁掉登录
 - **扩展性好**：web 与 extension 都有各自 refresh 路径
 
-### 注意点
+注意点：
 
-- middleware 只匹配 `/words/*`，若新增受保护路由要同步更新 matcher
+- middleware 只匹配 `/words/*`，新增受保护路由时要同步更新 matcher
 - refresh 失败后会清 cookie，业务侧要处理“重新登录”引导
 - OAuth provider 增加时，登录页 providers 和 Supabase 控制台要一致
 
----
+### 一句话总结
 
-## 9. 一句话总结
-
-这套 Supabase Auth 实现本质是：
+这套 Supabase Auth 的本质是：
 
 **浏览器负责 OAuth 跳转与换码，服务端负责会话校验与 Cookie 落地，中间件负责续期，服务端页面/API 复用统一鉴权入口。**
 
