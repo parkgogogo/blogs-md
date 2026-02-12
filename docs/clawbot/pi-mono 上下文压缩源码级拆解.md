@@ -1,235 +1,201 @@
-### 开场故事：一次“看起来没问题”的长会话，为什么突然崩了？
+### 开场故事：Agent 为什么会“越干越忘事”？
 
-我第一次认真意识到上下文压缩的重要性，不是在 benchmark，而是在一次很普通的重构任务里。
+想象你在写作业：桌上摊着一堆草稿纸。你一边算题一边翻旧纸，很快桌面就满了。
 
-当时 Agent 已经连续工作了几十轮：读了很多文件、改了不少逻辑、跑了几次命令。表面一切正常。直到某一轮，模型突然报上下文溢出。更糟的是，换个模型继续后，回答开始“失忆”——它记得目标，却说不清刚改过哪些文件、为什么这么改。
+有两种糟糕的结局：
 
-这类事故的本质不是“token 不够”，而是“工作状态断裂”。
+- 纸太多，你找不到关键步骤（= 上下文溢出 / overflow）
+- 你把旧纸都扔了，结果忘了你刚刚算到哪一步（= 粗暴截断导致失忆）
 
-`pi-mono` 这套 compaction 让我觉得有意思的点就在这：它解决的不是省 token，而是尽量让 Agent 在压缩后仍然“接得上活”。
+`pi-mono` 的 compaction 不是为了“省纸”，而是为了：
+
+> 即使必须收拾桌面，也要让你能继续把题做完。
 
 ### 核心理念（一句话）
 
-`pi` 的上下文压缩本质是：
+`pi` 把长会话变成：
 
-> 把长会话做成“可恢复的检查点 + 最近工作集”，而不是粗暴截断历史。
+> 一张“总结页” + 一张“书签” + 书签后面那几页原稿。
 
-你可以把它想成一本很厚的技术笔记：
-
-- 压缩摘要 = 目录页 + 关键结论
-- `firstKeptEntryId` = 书签
-- 书签之后的内容 = 你手边还摊开的那几页
+总结页让你知道到目前为止发生了什么；书签告诉你从哪继续看；后面几页保留了最近的细节。
 
 ### 术语地图（先读这段）
 
-先把几个关键词讲成人话，后面就不难了。
+只要把这四个词搞懂，后面就很轻松。
 
-- **turn（轮次）**：从一次用户输入开始，到模型回复（以及可能的一串工具调用）结束，算一轮。
-- **cut point（切分点）**：压缩时决定“从哪里开始保留原消息”的分界线。
-- **split turn（轮次被切开）**：某一轮太大，切分点落在这轮中间。
-- **firstKeptEntryId（保留起点 ID）**：压缩后重建上下文时的“书签位置”，从这个 entry 开始把原消息接回去。
-- **compaction summary（压缩摘要）**：对旧上下文的结构化总结，不是完整历史副本。
+- **turn（一轮）**：你说一句话 → Agent 回答（可能还会调用工具）→ 这一整段算一轮。
+- **cut point（切点）**：决定“从哪里开始保留原始内容”的分界线。
+- **firstKeptEntryId（书签）**：切点对应的那条记录 id；压缩后从这条开始继续喂给模型。
+- **split turn（一轮被切开）**：某一轮太长，切点落在这一轮中间。
 
-### 方案总览：pi 是怎么把“压缩”做成“可恢复”的
+### 方案总览：压缩发生时，系统到底做了什么？
 
 ```mermaid
 flowchart TD
-  A[assistant 完成一轮] --> B{检查是否需要压缩}
-  B -->|overflow| C[移除尾部 error 消息]
-  B -->|threshold| D[直接进入压缩]
-  C --> E[prepareCompaction]
-  D --> E
-  E --> F[findCutPoint 选切分点]
-  F --> G[generateSummary 生成结构化摘要]
-  G --> H[appendCompaction summary + firstKeptEntryId]
-  H --> I[buildSessionContext 重建上下文]
-  I --> J{overflow 场景?}
-  J -->|yes| K[自动 continue 重试]
-  J -->|no| L[等待下次用户输入]
+  A[对话越来越长] --> B{是否快装不下?}
+  B -->|是| C[选一个切点 cut point]
+  C --> D[把切点之前写成总结页]
+  D --> E[把书签 firstKeptEntryId 记下来]
+  E --> F[重建上下文：总结页 + 书签后原文]
+  B -->|否| G[继续正常对话]
 ```
 
-这张图你只要记住一句话：
+一句话：
 
-- `pi` 不是“删旧消息”，而是“插入一个 checkpoint，再从书签继续”。
+- **老内容变“总结页”**，**新内容从“书签”继续**。
 
-### 为什么要切？不切会怎样？
+### 为什么一定要“切”？不切会怎样？
 
 ### 它是什么
 
-“切”就是在超长历史里找一个分界线，把前面压成摘要，把后面原样保留。
+切，就是把历史分成两段：
 
-### 为什么需要它
+- 前段：压成总结页
+- 后段：原样保留（最近的工作集）
 
-如果不切，你只有两个坏选项：
+### 为什么需要
 
-- 全量保留：迟早 overflow
-- 粗暴截断：语义断裂，尤其是工具调用链断裂
+因为模型像一个容量有限的背包：
 
-### 怎么决定它
+- 不切：背包迟早爆
+- 乱扔：丢掉关键步骤，做题做一半就断片
 
-`pi` 按 token 预算找切分点：从新到旧累加，达到 `keepRecentTokens` 后找到合法 cut point。
+### 怎么决定（依据是什么）
 
-### 错了会怎样
+`pi` 用一个很直观的规则：
 
-切错最典型的后果是：模型看到 tool result，却看不到对应 tool call，后续推理直接跑偏。
+- 我至少要保留最近 `keepRecentTokens` 这么多内容
+- 所以从最新往回数，数够了就在那里附近找一个“合法切点”
+
+合法切点的核心约束只有一个：
+
+> **不能切在 toolResult 上。**
+
+原因也很直觉：你不能只留下“答案”，却把“题目”切掉。
 
 关键代码（`compaction.ts`）：
 
 ```ts
-switch (role) {
-  case "bashExecution":
-  case "custom":
-  case "branchSummary":
-  case "compactionSummary":
-  case "user":
-  case "assistant":
-    cutPoints.push(i);
-    break;
-  case "toolResult":
-    break; // 禁止切在 toolResult
-}
+case "toolResult":
+  break; // 禁止切在 toolResult
 ```
 
-这段代码你要记住三件事：
+### 错了会怎样
 
-- 解决了：工具调用语义被切断的问题。
-- 代价是：可切位置减少，可能更早进入 split turn。
-- 容易踩坑在：自定义消息类型若未分类清楚，切分规则会失真。
+- 切在 toolResult：模型看到工具输出，但不知道调用了什么工具、参数是什么 → 推理会歪。
 
-### 什么算一个 turn？为什么 split turn 会出现？
+### 什么算一轮 turn？为什么会出现 split turn？
 
 ### 它是什么
 
-turn 可以理解成“用户提一个任务，Agent完成这一轮处理”的最小语义单元。
+一个最小示例：
 
-### 为什么需要这个概念
+- User：帮我重构这个函数
+- Assistant：好的，我先读文件
+- Assistant toolCall：read(path=...)
+- toolResult：文件内容
+- Assistant：我准备改动，先解释思路
 
-因为压缩最怕把“同一轮”硬拆坏。尤其一轮里有长工具输出时，语义耦合很强。
+这一整串，从 user 开始到 assistant 收尾，就是一轮。
+
+### 为什么需要
+
+因为“同一轮”内部的内容是强绑定的：读文件、改文件、解释原因都在一起。
 
 ### 怎么决定 split turn
 
-当单轮内容本身太大，超过 `keepRecentTokens`，切分点就可能落在这轮中间，变成 split turn。
+当“某一轮”本身就太长（比如工具输出超长、思考很长），即使你只想保留最近 `keepRecentTokens`，切点也可能落在这一轮中间。
+
+这就叫 split turn。
 
 ### 错了会怎样
 
-如果把 split turn 当普通切分处理，后半轮会丢掉前置上下文，模型表现会像“突然变笨”。
+把 split turn 当普通切法处理，会出现：
+
+- 后半轮还在，但前半轮关键背景没了 → 看起来像 Agent 突然变笨。
+
+`pi` 的做法是：
+
+- 对“旧历史”生成一个总结
+- 对“这一轮被切掉的前半段”再生成一个小总结
+- 两个合并，保证后半段看得懂
 
 关键代码（`compaction.ts`）：
 
 ```ts
-if (isSplitTurn && turnPrefixMessages.length > 0) {
-  const [historyResult, turnPrefixResult] = await Promise.all([
-    generateSummary(...),
-    generateTurnPrefixSummary(...),
-  ]);
-  summary = `${historyResult}\n\n---\n\n**Turn Context (split turn):**\n\n${turnPrefixResult}`;
-}
+const [historyResult, turnPrefixResult] = await Promise.all([
+  generateSummary(...),
+  generateTurnPrefixSummary(...),
+]);
 ```
 
-这段代码你要记住三件事：
-
-- 解决了：超长单轮被硬切后“接不上”的问题。
-- 代价是：多一次摘要调用，延迟和成本上升。
-- 容易踩坑在：摘要质量不稳定时，桥接信息不足。
-
-### `firstKeptEntryId` 到底是什么？
+### `firstKeptEntryId`（书签）到底是什么？
 
 ### 它是什么
 
-它就是“书签”。告诉系统：压缩后，从哪条原始 entry 开始继续喂给模型。
+它就是书签：告诉系统“从哪条记录开始，把原文接回去”。
 
-### 为什么需要它
+### 为什么需要
 
-没有它，summary 之后接哪段历史会变模糊，容易出现上下文重建错位。
+没有书签，你不知道总结页之后应该接哪几页原稿。
 
-### 怎么决定它
+### 怎么决定
 
-由 `findCutPoint()` 决定 `firstKeptEntryIndex`，再映射到对应 entry 的 `id`。
+- `findCutPoint()` 找到切点位置
+- 对应 entry 的 `id` 就是 `firstKeptEntryId`
 
 ### 错了会怎样
 
-书签错一位，可能导致：
+- 书签偏后：丢上下文
+- 书签偏前：重复上下文
 
-- 重复上下文（模型反复看到同一段）
-- 缺失上下文（关键一段被跳过）
+重建上下文时（`session-manager.ts`）做的事可以翻译成人话：
 
-重建逻辑（`session-manager.ts`）核心顺序：
-
-```ts
-messages.push(createCompactionSummaryMessage(...));
-// 从 firstKeptEntryId 开始拼接 kept messages
-// 再拼 compaction 之后的新消息
-```
-
-这段代码你要记住三件事：
-
-- 解决了：压缩后上下文入口不稳定的问题。
-- 代价是：summary 成为高权重事实层。
-- 容易踩坑在：firstKeptEntryId 计算或存储异常。
+- 先把“总结页”放进背包
+- 再从“书签”开始把原文一页页塞进背包
 
 ### 为什么压缩后还能记得“动过哪些文件”？
 
-`pi` 在摘要时会额外抽取工具调用中的文件路径（read/write/edit），并追加到摘要尾部。
+这件事是 compaction 能落到工程场景的关键。
+
+`pi` 会把工具调用里涉及的文件路径记下来：
+
+- read 过哪些
+- write/edit 过哪些
+
+这样压缩后，你依然知道“我刚刚动过哪几个文件”。
 
 关键代码（`utils.ts`）：
 
 ```ts
-switch (block.name) {
-  case "read": fileOps.read.add(path); break;
-  case "write": fileOps.written.add(path); break;
-  case "edit": fileOps.edited.add(path); break;
-}
+case "read": fileOps.read.add(path);
+case "write": fileOps.written.add(path);
+case "edit": fileOps.edited.add(path);
 ```
 
-最终会形成：
+最后把它们写进总结页尾部（读者不需要懂 XML，理解成“附录清单”即可）。
 
-```xml
-<read-files>
-...
-</read-files>
+### overflow vs threshold：什么时候自动压缩？
 
-<modified-files>
-...
-</modified-files>
-```
+把它讲成初中生能懂的版本：
 
-这段机制你要记住三件事：
+- **overflow**：背包已经爆了 → 先把坏掉那页（error message）拿出来 → 立刻收拾桌面 → 再继续做题
+- **threshold**：背包快满了但还没爆 → 先收拾桌面，但不强行继续，等你下一句再说
 
-- 解决了：压缩后“工程足迹”丢失的问题。
-- 代价是：仅覆盖标准工具调用路径。
-- 容易踩坑在：扩展若绕过标准工具，轨迹会不完整。
+这里 `reserveTokens` 的直觉是：
 
-### 自动触发怎么判断？overflow 和 threshold 有啥区别？
-
-- **overflow**：已经报错，目标是“恢复 + 自动重试”
-- **threshold**：还没报错，目标是“预防”，不自动继续
-
-关键判断（`agent-session.ts`）：
-
-```ts
-if (shouldCompact(contextTokens, contextWindow, settings)) {
-  await this._runAutoCompaction("threshold", false);
-}
-```
-
-`shouldCompact` 规则很直接：
-
-```ts
-contextTokens > contextWindow - reserveTokens
-```
-
-你可以把 `reserveTokens` 理解成“给下一次回答预留的呼吸空间”。
+- 给“下一次回答”留出呼吸空间
 
 ### 落地建议（今天就能用）
 
-如果你在自己的 Agent 系统里想借鉴：
+如果你自己做 Agent 上下文治理，建议优先抄这四条：
 
-- 把“压缩”当状态恢复，不是成本优化
-- 先做 cut point 约束（尤其禁止切 toolResult）
-- 处理 split turn（不要偷懒）
-- 保留文件轨迹（至少 path 级）
+- 把 compaction 当“状态恢复”，不是当“省 token”
+- cut point 禁止切在 toolResult
+- split turn 要兜底（否则最容易断片）
+- 记录文件轨迹（至少路径级别）
 
-参数起步建议：
+参数起步：
 
 ```json
 {
@@ -241,35 +207,23 @@ contextTokens > contextWindow - reserveTokens
 }
 ```
 
-调参直觉：
+### 失败模式（错了会怎样）
 
-- 频繁 overflow：先调大 `reserveTokens`
-- 压缩后接不上：先调大 `keepRecentTokens`
+你可以用这张清单快速定位“压缩没写好”的症状：
 
-### 边界与反模式
+- 压缩后 Agent 不知道刚改过哪些文件 → 文件轨迹没保住
+- 压缩后工具相关推理全乱 → cut point 切断了 tool 语义
+- 压缩后突然变笨，像失忆 → split turn 没兜住 / 总结页缺关键桥接
 
-这套方案并非万能：
+### 三句话总结
 
-- 摘要本质是有损压缩
-- 摘要质量受模型影响
-- 文件轨迹不等于完整语义恢复
+- compaction 的目标不是省 token，而是让 Agent **压缩后还能继续干活**。
+- `firstKeptEntryId` 就是书签：总结页之后从哪继续接原文。
+- cut point/split turn/file 轨迹，是“工程可继续性”的三件套。
 
-常见反模式：
+### 附录：关键源码路径（想深挖再看）
 
-- 只做自由摘要，不做结构化字段
-- 忽略 firstKeptEntryId 的稳定性
-- 把 compaction 当“节省 token 功能”而不是“运行时治理功能”
-
-### 总结：如果你只记住三句话
-
-- `pi` 的 compaction 本质是 checkpoint + 书签，不是简单截断。
-- cut point / split turn / firstKeptEntryId 三件套，决定了压缩后能不能继续干活。
-- 工程可继续性来自“结构化摘要 + 文件轨迹 + 上下文重建顺序”。
-
-### 附录：关键源码路径
-
-- `packages/coding-agent/src/core/agent-session.ts`
 - `packages/coding-agent/src/core/compaction/compaction.ts`
 - `packages/coding-agent/src/core/compaction/utils.ts`
+- `packages/coding-agent/src/core/agent-session.ts`
 - `packages/coding-agent/src/core/session-manager.ts`
-- `packages/coding-agent/src/core/extensions/types.ts`
