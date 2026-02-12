@@ -1,64 +1,59 @@
-### 这篇文章要解决什么问题
+### 这篇文章先回答一个现实问题
 
-你关心的是：`pi` 的上下文压缩（compaction）到底怎么实现，为什么它在长会话里还能保持可继续性。
+如果你把 AI Coding Agent 真放进日常开发，很快会遇到这三种崩溃：
 
-这篇不做概念科普，直接走源码路径，覆盖：
+- 会话越聊越长，突然上下文溢出，回答直接报错
+- 为了省 token 粗暴截断后，模型忘了“刚改过哪些文件”
+- 复杂任务一半在旧上下文、一半在新上下文，后续续不上
 
-- 触发机制（overflow vs threshold）
-- cut point 算法与 split turn
-- 摘要生成 prompt 设计
-- 文件操作轨迹是怎么累计进去的
-- 压缩后会话如何重建
-- 扩展如何接管 compaction
+`pi-mono` 的 compaction 解决的不是“省一点 token”，而是：
 
-核心代码位于：
+> 在上下文不得不压缩时，依然让 Agent 保持“可恢复的工作状态”。
 
-- `packages/coding-agent/src/core/agent-session.ts`
-- `packages/coding-agent/src/core/compaction/compaction.ts`
-- `packages/coding-agent/src/core/compaction/utils.ts`
-- `packages/coding-agent/src/core/session-manager.ts`
-- `packages/coding-agent/src/core/extensions/types.ts`
+这才是它真正有价值的地方。
 
-### 先建立心智模型：pi 的 compaction 不是“删历史”，而是“重写上下文入口”
+### 核心理念（一句话）
 
-很多系统压缩上下文是“直接删旧消息”，pi 不是。它做的是：
+`pi` 的压缩策略本质是 **checkpoint 化上下文**：
 
-- 在 session tree 里追加一条 `compaction` entry
-- `compaction` entry 存 summary + `firstKeptEntryId`
-- 重新构建给 LLM 的上下文时：
-  - 先喂这条 summary
-  - 再喂从 `firstKeptEntryId` 开始的“保留消息”
+- 不直接删除历史
+- 追加一条结构化 `compaction` 记录作为“新的上下文入口”
+- 保留一段最近消息继续运行
 
-这意味着“完整历史仍在 JSONL 里”，只是上下文窗口入口换成了 checkpoint。
+所以它更像数据库里的“检查点 + 增量日志”，不是简单聊天截断。
+
+### 方案总览
 
 ```mermaid
 flowchart TD
-  A[assistant 结束一轮] --> B{_checkCompaction}
-  B -->|overflow| C[移除尾部 error assistant]
-  C --> D[_runAutoCompaction willRetry=true]
-  B -->|threshold| E[_runAutoCompaction willRetry=false]
-  D --> F[prepareCompaction]
-  E --> F
-  F --> G[compact 生成 summary]
+  A[一轮 assistant 结束] --> B{检查是否需要压缩}
+  B -->|overflow| C[移除尾部 error message]
+  B -->|threshold| D[直接进入压缩]
+  C --> E[prepareCompaction]
+  D --> E
+  E --> F[findCutPoint 选保留起点]
+  F --> G[generateSummary 生成结构化摘要]
   G --> H[appendCompaction summary + firstKeptEntryId]
-  H --> I[buildSessionContext 重建消息]
-  I --> J{willRetry}
-  J -->|yes| K[agent.continue 自动重试]
-  J -->|no| L[等待下一次用户输入]
+  H --> I[buildSessionContext 重建上下文]
+  I --> J{overflow 场景?}
+  J -->|yes| K[自动 continue 重试]
+  J -->|no| L[等待用户下一次输入]
 ```
 
-### 触发机制：两类触发路径，行为不同
+一句话看懂：
 
-在 `agent-session.ts` 的 `_checkCompaction()`，压缩有两个入口：
+- 压缩不是删对话，而是“把旧历史折叠成摘要 checkpoint，再接上最近工作集”。
 
-### overflow：模型已经报上下文溢出
+### 关键机制：触发策略（overflow vs threshold）
 
-逻辑关键点：
+先回答问题：**为什么要区分两种触发？**
 
-- 只有“当前选中模型”的 overflow 才触发（防止模型切换误触发）
-- 如果 error 发生在某次 compaction 之前，也不会重复触发
-- 触发后会先从 agent state 移除最后一个 error assistant message
-- 然后 auto compact，并 `willRetry=true`
+因为“已经爆了”和“快爆了”需要不同恢复策略。
+
+- overflow：已经报错，要压缩后自动续跑
+- threshold：预防性压缩，不自动继续
+
+关键代码（`agent-session.ts`）：
 
 ```ts
 if (sameModel && !errorIsFromBeforeCompaction && isContextOverflow(...)) {
@@ -69,42 +64,37 @@ if (sameModel && !errorIsFromBeforeCompaction && isContextOverflow(...)) {
   await this._runAutoCompaction("overflow", true);
   return;
 }
-```
 
-这个设计的意义很实用：避免“错误消息本身”污染下一次重试上下文。
-
-### threshold：还没爆，但接近上限
-
-在 assistant 成功返回后，基于 usage 计算当前上下文 token，超过阈值就压缩，但不会自动继续回答。
-
-```ts
 const contextTokens = calculateContextTokens(assistantMessage.usage);
 if (shouldCompact(contextTokens, contextWindow, settings)) {
   await this._runAutoCompaction("threshold", false);
 }
 ```
 
-`shouldCompact` 非常直接：
+这段代码你要记住三件事：
+
+- 解决了：把“报错恢复”与“预防压缩”拆开，行为更可控。
+- 代价是：状态机分支变复杂，需要避免重复触发。
+- 坑点是：模型切换场景要防误触发（源码里有 `sameModel` 判断）。
+
+### 关键机制：token 估算（为什么不全靠 heuristic）
+
+先回答问题：**上下文大小怎么算才靠谱？**
+
+`pi` 的做法很务实：
+
+- 优先用最后一条 assistant usage（真实计量）
+- 仅对 trailing messages 用 `chars/4` 估算
+
+关键代码（`compaction.ts`）：
 
 ```ts
-contextTokens > contextWindow - reserveTokens
-```
+const usageTokens = calculateContextTokens(usageInfo.usage);
+let trailingTokens = 0;
+for (let i = usageInfo.index + 1; i < messages.length; i++) {
+  trailingTokens += estimateTokens(messages[i]);
+}
 
-默认配置（`settings-manager.ts`）：
-
-- `reserveTokens = 16384`
-- `keepRecentTokens = 20000`
-- `enabled = true`
-
-### token 估算策略：优先可信 usage，fallback 才走估算
-
-`estimateContextTokens()` 的策略很值得学：
-
-- 先找最后一条有 usage 的 assistant message
-- 用它的 `totalTokens`（或 input/output/cacheRead/cacheWrite 求和）作为可信基线
-- 只对其后的 trailing messages 做启发式估算（chars/4）
-
-```ts
 return {
   tokens: usageTokens + trailingTokens,
   usageTokens,
@@ -113,36 +103,58 @@ return {
 };
 ```
 
-这比“全量 chars/4”稳定很多，尤其在长会话里误差不会累积爆炸。
+这段代码你要记住三件事：
 
-### cut point 算法：保证工具调用语义不被切断
+- 解决了：纯 heuristic 在长会话误差累积的问题。
+- 代价是：依赖 provider usage 质量；无 usage 时仍需 fallback。
+- 坑点是：不同模型/provider usage 字段差异，需要统一适配层。
 
-压缩真正难点不是“何时压缩”，而是“从哪里切”。
+### 关键机制：cut point（为什么不能切在 toolResult）
 
-`findCutPoint()` 的约束：
+先回答问题：**压缩从哪切，才能不破坏语义？**
 
-- 允许切在 `user / assistant / custom / bashExecution / branchSummary / compactionSummary`
-- **禁止切在 `toolResult`**（避免 tool call 和结果分离）
-- 从最新往前累计 token，达到 `keepRecentTokens` 后找最近有效切点
-- 再向前吸纳非 message entry（模型切换、thinking 变更等）
+`pi` 的核心约束：
+
+- 可以切 user / assistant / custom / bashExecution
+- 不能切 `toolResult`
+
+因为 `toolResult` 必须和前面的 toolCall 保持关联，切断后模型会看到“结果”但不知道“调用了什么”。
+
+关键代码（`compaction.ts`）：
 
 ```ts
-if (entry.type === "message") {
-  const role = entry.message.role;
-  if (role === "toolResult") {
-    // never cut here
-  }
+switch (role) {
+  case "bashExecution":
+  case "custom":
+  case "branchSummary":
+  case "compactionSummary":
+  case "user":
+  case "assistant":
+    cutPoints.push(i);
+    break;
+  case "toolResult":
+    break;
 }
 ```
 
-这个细节很关键：很多系统压缩后会出现“模型看到 tool result 但看不到 tool call”，导致后续推理错位。pi 在 cut rules 层避免了这类坏状态。
+这段代码你要记住三件事：
 
-### split turn：单轮过大时的双摘要策略
+- 解决了：压缩后工具语义错位（最常见灾难之一）。
+- 代价是：可切点减少，可能更早触发 split-turn。
+- 坑点是：自定义消息类型要清楚是否允许作为 cut point。
 
-如果单个 turn 本身就很大，cut 可能落在 turn 中间。pi 会识别 `isSplitTurn`，并把摘要拆成两块并行生成：
+### 关键机制：split turn（单轮过大时怎么保住上下文）
 
-- history summary（旧历史）
-- turn prefix summary（当前大 turn 的前缀）
+先回答问题：**如果一个 turn 本身就超大怎么办？**
+
+这时 cut 可能落在 turn 中间。`pi` 不硬切，而是双摘要：
+
+- history summary
+- turn prefix summary
+
+并行生成后合并。
+
+关键代码（`compaction.ts`）：
 
 ```ts
 if (isSplitTurn && turnPrefixMessages.length > 0) {
@@ -154,48 +166,35 @@ if (isSplitTurn && turnPrefixMessages.length > 0) {
 }
 ```
 
-这就是为什么 pi 在“单次复杂任务、工具调用巨长”的场景下还能续上语义，而不是只剩抽象总结。
+这段代码你要记住三件事：
 
-### 摘要 prompt 设计：结构化 checkpoint，而不是自由摘要
+- 解决了：复杂单轮任务在压缩后无法续写的问题。
+- 代价是：多一次 LLM 总结调用，延迟和成本上升。
+- 坑点是：摘要质量不稳定时，turn 语义桥接会退化。
 
-`SUMMARIZATION_PROMPT` 明确要求固定结构：
+### 关键机制：为什么压缩后还能“记得改了哪些文件”
 
-- Goal
-- Constraints & Preferences
-- Progress（Done / In Progress / Blocked）
-- Key Decisions
-- Next Steps
-- Critical Context
+先回答问题：**摘要后工程上下文怎么保真？**
 
-并强调保留：
+`pi` 会从 assistant toolCalls 里抽取 `read/write/edit(path)`，并累计到摘要尾部。
 
-- 文件路径
-- 函数名
-- error message
-
-同时，`generateSummary()` 会把消息先 `convertToLlm()`，再 `serializeConversation()` 成文本包在 `<conversation>` 标签里，避免模型“继续对话”而不是“总结对话”。
-
-```ts
-const llmMessages = convertToLlm(currentMessages);
-const conversationText = serializeConversation(llmMessages);
-const promptText = `<conversation>\n${conversationText}\n</conversation>\n\n${basePrompt}`;
-```
-
-这是个非常工程化的防偏航手法。
-
-### 文件读写轨迹：压缩后仍保留“工程可继续性”
-
-`utils.ts` 里会从 assistant 的 tool calls 抽取 `read/write/edit` 对应 path：
+关键代码（`utils.ts`）：
 
 ```ts
 switch (block.name) {
-  case "read": fileOps.read.add(path); break;
-  case "write": fileOps.written.add(path); break;
-  case "edit": fileOps.edited.add(path); break;
+  case "read":
+    fileOps.read.add(path);
+    break;
+  case "write":
+    fileOps.written.add(path);
+    break;
+  case "edit":
+    fileOps.edited.add(path);
+    break;
 }
 ```
 
-然后在摘要尾部追加：
+最后会追加：
 
 ```xml
 <read-files>
@@ -207,72 +206,64 @@ switch (block.name) {
 </modified-files>
 ```
 
-并且它会把“前一次 compaction details”也合并进来，实现累计追踪。这点对 coding task 非常重要：你换模型、跨分支后仍然知道哪些文件被读过改过。
+这段机制你要记住三件事：
 
-### 压缩后怎么重建上下文：session-manager 的关键拼接
+- 解决了：压缩后“我到底动过什么文件”丢失问题。
+- 代价是：只能追踪走 tool 层的文件操作。
+- 坑点是：如果扩展绕过标准 read/write/edit 工具，轨迹会不完整。
 
-`buildSessionContext()` 在检测到 `compaction` entry 后，组装顺序是：
+### 关键机制：压缩后如何重建给 LLM 的上下文
 
-- `createCompactionSummaryMessage(compaction.summary, ...)`
-- 从 `firstKeptEntryId` 到 compaction 前的 kept entries
-- compaction 后的新消息
+先回答问题：**summary 写进 session 后，模型具体看到什么？**
+
+在 `session-manager.ts`：
+
+- 先注入 `compactionSummaryMessage`
+- 再从 `firstKeptEntryId` 开始拼接保留消息
+- 最后接 compaction 之后的新消息
+
+关键代码：
 
 ```ts
 messages.push(createCompactionSummaryMessage(...));
-// kept messages from firstKeptEntryId
-// messages after compaction
+// emit kept messages from firstKeptEntryId
+// emit messages after compaction
 ```
 
-这相当于把原始超长历史折叠成“一个稳定摘要节点 + 最近工作集”。
+这段机制你要记住三件事：
 
-### 扩展接管：compaction 在 pi 里是可编排能力
+- 解决了：压缩后上下文入口不稳定的问题。
+- 代价是：摘要成为高权重事实层，质量要求很高。
+- 坑点是：firstKeptEntryId 选错会导致上下文断层。
 
-在 `extensions/types.ts`，`session_before_compact` 可以：
+### 扩展能力：compaction 不是黑盒，可被接管
+
+先回答问题：**能不能换我自己的压缩策略？**
+
+可以，`session_before_compact` 事件允许 extension：
 
 - cancel 默认压缩
-- 返回自定义 `compaction` 结果
+- 回传自定义 `CompactionResult`
 
-```ts
-interface SessionBeforeCompactEvent {
-  type: "session_before_compact";
-  preparation: CompactionPreparation;
-  branchEntries: SessionEntry[];
-  customInstructions?: string;
-  signal: AbortSignal;
-}
-```
+接口（`extensions/types.ts`）里有：
 
-官方示例 `examples/extensions/custom-compaction.ts` 演示了：
+- `preparation.messagesToSummarize`
+- `preparation.turnPrefixMessages`
+- `preparation.previousSummary`
+- `preparation.firstKeptEntryId`
 
-- 用另一模型（Gemini Flash）做摘要
-- 汇总 `messagesToSummarize + turnPrefixMessages`
-- 回传自定义 summary
+官方示例 `examples/extensions/custom-compaction.ts` 还演示了“用另一个模型做摘要”。
 
-这使 compaction 从“内部策略”变成“可插拔策略接口”。
+### 落地建议（今天就能用）
 
-### 一个更底层的 tradeoff：为什么是 keepRecentTokens，而不是 keepRecentTurns
+如果你要把这套思想迁移到自己的 Agent：
 
-pi 当前以 token 预算裁切（`keepRecentTokens`），而不是固定 N turn。优点：
+- 不要先做 fancy memory，先做 checkpoint 语义
+- cut point 一定禁止切在 tool result
+- overflow 与 threshold 分路径处理
+- 保留文件操作轨迹（哪怕先只做 read/edit/write path）
 
-- 对工具输出超长的 turn 更稳
-- 更贴近真实 context window 约束
-
-代价：
-
-- 同样的任务，不同消息密度下保留 turn 数会波动
-- 需要 split-turn 机制兜底（pi 已实现）
-
-这是偏“系统工程正确性”的取舍，而不是“交互上看起来整齐”的取舍。
-
-### 你可以直接用的调参建议（基于这套实现）
-
-如果你在 OpenClaw/自有 agent 里借鉴这套策略：
-
-- 高频工具调用项目：`keepRecentTokens` 适当提高，减少 split-turn 发生概率
-- 输出较长模型：`reserveTokens` 提高，避免刚压缩完又 overflow
-- 若希望更可控摘要质量：用 extension 接管 `session_before_compact`，专门指定摘要模型
-
-一个可参考的配置：
+参数建议（起步）：
 
 ```json
 {
@@ -284,27 +275,34 @@ pi 当前以 token 预算裁切（`keepRecentTokens`），而不是固定 N turn
 }
 ```
 
-### 最后结论：pi 的 compaction 强在“可恢复语义”，不是“省 token”
+当你发现“压缩后仍频繁 overflow”，优先调大 `reserveTokens`；
+当你发现“压缩后上下文接不上”，优先调大 `keepRecentTokens`。
 
-表面看它是在省 context，实际上它在做的是 **可恢复执行状态管理**：
+### 边界与反模式
 
-- 有结构化 checkpoint
-- 有 turn 级边界保护
-- 有 split-turn 兜底
-- 有文件操作轨迹累计
-- 有扩展层可接管
+这套方案也有边界：
 
-所以它比“简单摘要 + 截断”更接近可生产化的 agent runtime。
+- 摘要质量本质受模型影响，无法 100% 无损
+- 文件轨迹只能覆盖标准工具调用
+- 若过度压缩，会把细节债务推给后续轮次
 
-### 附：关键源码阅读路径
+常见反模式：
 
-```text
-packages/coding-agent/src/core/agent-session.ts
-packages/coding-agent/src/core/compaction/compaction.ts
-packages/coding-agent/src/core/compaction/utils.ts
-packages/coding-agent/src/core/compaction/branch-summarization.ts
-packages/coding-agent/src/core/session-manager.ts
-packages/coding-agent/src/core/extensions/types.ts
-packages/coding-agent/examples/extensions/custom-compaction.ts
-packages/coding-agent/docs/compaction.md
-```
+- 把 compaction 当成本优化手段，而不是状态恢复手段
+- 只做摘要，不做结构化字段（Goal/Next Steps/Critical Context）
+- 不追踪文件操作，导致 coding 场景恢复失败
+
+### 总结：你应该记住的三句话
+
+- `pi` 的上下文压缩本质是“可恢复工作状态”，不是“减少 token 消耗”。
+- 它通过 `summary checkpoint + firstKeptEntryId` 重建上下文，而不是粗暴截断历史。
+- 真正让它可用于工程场景的，是 cut 约束、split-turn 兜底、文件轨迹累计、扩展可接管。
+
+### 附录：关键源码索引
+
+- `packages/coding-agent/src/core/agent-session.ts`
+- `packages/coding-agent/src/core/compaction/compaction.ts`
+- `packages/coding-agent/src/core/compaction/utils.ts`
+- `packages/coding-agent/src/core/session-manager.ts`
+- `packages/coding-agent/src/core/extensions/types.ts`
+- `packages/coding-agent/examples/extensions/custom-compaction.ts`
