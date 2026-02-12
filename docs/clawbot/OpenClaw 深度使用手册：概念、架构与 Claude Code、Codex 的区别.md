@@ -1,18 +1,19 @@
-> 一句话摘要：这是一份面向工程使用的 OpenClaw 手册——先用最短路径跑通“消息进来→工具执行→消息出去”，再把 Gateway/Session/Tool/Skill/Cron/Memory 这些概念讲清楚其职责边界，最后用同一套维度对比 OpenClaw、Claude Code、Codex（以及“老式 agent”）。
+> 一句话摘要：OpenClaw 不是“更聪明的模型”，而是一套让 agent **长期在线、能接入聊天渠道、能按时触发任务、能调用工具并留下证据** 的运行时；本文按“怎么用”讲清楚概念与边界，并用同一套维度对比 Claude Code、Codex 和传统 prompt+loop agent。
 
-### 这份手册的定位（先把边界钉死）
+### 先把话说死：OpenClaw 解决的是“运行时问题”
 
-OpenClaw 不是“一个更聪明的模型”，也不是“一个写 prompt 的框架”。它更像是把 agent 变成可用系统的一层 **运行时（runtime）**：
+很多 agent 项目写着写着就会变成两种东西：
 
-- 接入真实世界的输入输出（Telegram/WhatsApp/Discord…）
-- 组织可验证的外部动作（工具：文件/命令/浏览器/定时任务…）
-- 给工程使用的调度、权限、会话、交付结构（cron/heartbeat、allowlist、skills、workspace/memory）
+- 一种是“我在 IDE 里跟它结对编程”（工作区内循环，文件/测试/代码是主角）。
+- 另一种是“我想让它在 Telegram 里随叫随到，定时做事，还能把结果落到文件里”（长期在线，I/O 与调度是主角）。
 
-这份文档以“使用手册”为主：**入口、配方、边界**优先；架构解释只写到足够支撑正确使用。
+Claude Code 明显属于前者；OpenClaw 明显属于后者。
 
-### Quickstart：跑通一个闭环（5 分钟）
+把它理解成“消息网关 + 任务调度 + 工具编排 + 工作区落盘”，后面概念就不容易乱。
 
-目标：确认 OpenClaw 处在“可用状态”：Gateway 常驻、渠道可达、能执行最基础的命令式诊断。
+### 5 分钟：确认你真的在用一个“在线运行时”
+
+先不谈架构。先确认它能稳定完成一个闭环。
 
 ```bash
 openclaw status
@@ -20,105 +21,55 @@ openclaw channels status
 openclaw gateway status
 ```
 
-成功标志（经验标准）：
+怎么看算 OK：
 
-- `openclaw status` 里 Gateway reachable，且渠道（如 Telegram）状态为 OK。
-- `openclaw gateway status` 显示运行中（running）且 RPC probe ok。
+- `openclaw status` 里 Gateway reachable。
+- `openclaw channels status` 里目标渠道（比如 Telegram）状态 OK。
 
-如果只想快速看更全的诊断输出（可复制给别人）：
+需要更“可复制给别人看”的一次性诊断输出：
 
 ```bash
 openclaw status --all
 ```
 
-### 概念地图：OpenClaw 的核心对象有哪些？
+### 你会反复遇到的几个名词（以及它们的边界）
 
-下面这些概念是“会出现在命令行/配置/日志里”的工程对象。理解它们的边界，后面所有功能才不会混。
+这里不做百科式解释，只解释到“用的时候不会误用”。
 
-- **Gateway**：网关进程。负责渠道连接、消息收发、会话路由、定时调度。
-- **Channel**：外部平台适配（Telegram/WhatsApp/Discord/…）。Gateway 通过它“收包/发包”。
-- **Session**：一次对话的执行上下文。输入消息 → 规划 → 工具调用 → 输出回复。
-- **Agent**：一套处理配置（模型、提示词、可用工具、记忆策略）。同一个 Gateway 可承载多个 agent。
-- **Tool**：可验证外部动作的原子能力（读写文件、exec、web_fetch、browser、message、cron…）。
-- **Skill**：针对某类任务的“作业指导书（SOP）”。固定流程与质量门槛，降低随机性。
-- **Workspace**：本地文件工作区。技能与记忆以文件为中心沉淀在这里。
-- **Memory**：对话连续性与偏好/约定的持久化机制（按 OpenClaw 的 memory 插件实现）。
-- **Heartbeat**：周期性触发器（可漂移），适合批量巡检与轻提醒。
-- **Cron**：精确定时调度器（准点/一次性/周期性）。运行在 Gateway 内，任务持久化。
+**Gateway**
 
-### 心智模型：一条消息进来之后发生了什么
+- 是什么：常驻进程，负责渠道连接、消息收发、会话路由、cron/heartbeat 调度。
+- 入口：`openclaw gateway status` / `openclaw gateway restart`
+- non-goals：不负责“聪明”，只负责“可靠收发 + 可靠调度”。把复杂逻辑塞进 Gateway 会把故障域搞大。
 
-```mermaid
-flowchart TD
-  U[User] --> CH[Channel]
-  CH --> GW[Gateway]
-  GW --> S[Session]
-  S --> A[Agent]
-  A --> T[Tools]
-  T --> A
-  A --> GW
-  GW --> CH
-  CH --> U
-```
+**Session**
 
-一句话：Gateway 解决“收发与调度”，Agent/Session 解决“如何处理”，Tools 解决“如何对外产生效果”。
+- 是什么：一次消息触发的一轮执行上下文；可以包含多次工具调用。
+- 入口：日常用 `openclaw status` 观察会话活跃与异常提示即可。
+- 边界：一旦引入 tools，Session 的失败通常来自“外部动作卡住/超时”，不是“不会写字”。
 
-### Gateway：为什么要单独做一层网关
+**Tool**
 
-如果把“外部平台 I/O（收发、重试、速率限制、连接保活）”和“智能处理（模型推理、工具执行）”揉在一起，系统会变得很难稳定：任何一个工具超时都可能拖垮整体收发。
+- 是什么：能产生可验证外部效果的能力（读写文件、执行命令、抓网页、发消息、建定时任务）。
+- 入口：在 OpenClaw 里就是 tool call；在工程落地上你只需要记住：工具的输出应该能被复查（路径、命令、URL）。
+- 取舍：工具越强，权限与审批就越重要；否则就是在主机上放了一个“可被 prompt 注入的 shell”。
 
-Gateway 的设计目的就是把 I/O 故障域隔离出来，让系统更像工程系统，而不是 demo。
+**Skill**
 
-常用入口：
+- 是什么：SOP（作业指导书）。固定“质量门槛”，不是固定“写作套路”。
+- 正确用法：把 checklist 固化（必须给入口、必须给 recipes、必须落盘提交），节奏与文风留给终稿编辑。
 
-```bash
-openclaw gateway status
-openclaw gateway restart
-```
+**Workspace / Memory**
 
-### Session：为什么同样是聊天要引入会话执行器
+- Workspace：把结果落盘的地方；如果不落盘，就很难复用、很难 diff。
+- Memory：保存偏好与上下文，但不能替代“把关键事实写进文件”。
 
-工程上最关键的一点：一次回复往往不是“直接生成文本”，而是多步动作的组合，例如：
+**Cron vs Heartbeat**
 
-- 读文件 → 总结 → 写文件 → 提交 git
-- 搜索/抓取网页 → 提炼 → 发到 Telegram
-- 定时任务触发 → 执行固定流程 → 产出日报
+- Cron：准点闹钟（准时、可追踪 run history）。
+- Heartbeat：周期巡检（可漂移、适合合并多个检查）。
 
-Session 是把这些多步动作串起来、可追踪、可中断的容器。它让 agent 从“只会说话”变成“能完成任务”。
-
-### Tools：为什么强调“可验证外部动作”
-
-OpenClaw 的 tool 不是为了炫技，而是为了两个工程目标：
-
-- **可验证**：读写到哪个路径、执行了什么命令、抓取了哪个 URL——都有证据。
-- **可控边界**：工具有明确输入输出，权限可控（allowlist/审批）。
-
-典型工具类别（举例）：
-
-- 文件：read/write/edit
-- 命令：exec/process
-- Web：web_search/web_fetch/browser
-- 调度：cron
-- 消息：message
-
-### Skills：为什么你会感觉“模板化”，以及正确用法是什么
-
-Skill 的价值是把“交付质量门槛”固化下来：
-
-- 该有 Quickstart 就必须有
-- 该给入口/失败模式就必须给
-- 该 commit/push 就必须做
-
-但 skill 不应该把文章写成“同一套开头 + 同一套结构”。更稳的策略是：
-
-- **固定质量标准（checklist）**，不固定写作节奏
-- 草稿阶段用模板，终稿阶段必须去模板化（改标题、删模板语气、打散对称列表）
-
-### Cron 与 Heartbeat：定时能力怎么用
-
-如果希望“9:00 准点提醒”或“每晚跑一遍任务”，使用 cron。
-
-常用入口：
+常用入口（够用就行）：
 
 ```bash
 openclaw cron status
@@ -126,107 +77,91 @@ openclaw cron list
 openclaw cron runs --id <jobId> --limit 20
 ```
 
-如果希望“每隔一段时间巡检一下、合并处理多件事”，使用 heartbeat。
+### 一个能长期跑的用法：把“任务”写成可追踪的交付物
 
-这两者的差异是工程边界差异：cron 是精确定时器，heartbeat 更像批处理轮询。
+OpenClaw 真正比“聊天式 agent demo”强的地方，是它鼓励把结果变成可追踪交付：
 
-### Recipes：把 OpenClaw 用成“工程工具”
+- 写到文件（workspace）
+- 提交到 git（可回滚、可审阅）
+- 按时触发（cron）
+- 把结果送回渠道（delivery）
 
-下面给出三类高频配方。每个配方都故意写成“照抄即可”的形式。
+这套组合拳决定了它适合做“长期助手”，而不是只适合做一次性问答。
 
-#### Recipe 1：用 OpenClaw 做一个可复用的写作/整理流水线
+### Recipes（照抄就能用）
 
-目标：把一次性写作变成可重复交付（例如输出到 `blog.md/docs/clawbot/` 并提交）。
+#### Recipe：定时产出一条内容并送回聊天
 
-步骤（示例）：
+目标：每天固定时间产出一条结构化结果（哪怕只是“提醒 + 链接 + 3 行摘要”）。
 
-- 明确输出路径与提交动作（让产出可追踪）。
-- 让 agent 使用 blog-writing skill 的 checklist 固定质量门槛。
-
-成功标志：
-
-- 产出落盘 + 有 commit（可回滚、可 diff）。
-
-常见坑：
-
-- 只生成文本不落盘，等于不可复用。
-
-#### Recipe 2：定时做“背景任务”（日报/摘要/巡检）
-
-目标：每天固定时间产出一条结构化结果。
-
-步骤（命令入口）：
+入口（先把运行面确认清楚）：
 
 ```bash
-openclaw cron list
 openclaw cron status
+openclaw cron list
 ```
 
 成功标志：
 
-- job 有 run history（`cron runs` 可查），产出能送达渠道。
+- 有 jobId；`openclaw cron runs` 里能看到 ok/error 的历史。
 
 常见坑：
 
-- 误以为 cron 在“模型里”跑；实际上 cron 在 Gateway 里跑，Gateway 必须常驻。
+- 以为 cron 跑在“模型里”。不是的：cron 跑在 Gateway 里，Gateway 不常驻就不会触发。
 
-#### Recipe 3：把“Web 信息 → 可读摘要 → 发回聊天”做成固定动作
+#### Recipe：把一次写作变成可复用交付（落盘 + commit）
 
-目标：把网页内容抓取、提炼、归档，而不是“看一眼就丢”。
-
-步骤：
-
-- 用 web_fetch 获取主内容（静态页优先）。
-- 复杂站点再用 browser。
-- 把摘要写入 workspace（可检索），必要时再发回渠道。
+目标：别让内容只存在于聊天窗口；把文章落到 `blog.md/docs/clawbot/` 并提交。
 
 成功标志：
 
-- 有落盘结果（markdown）+ 可追溯 URL。
+- 文件落盘 + 有 commit（能 diff、能回滚）。
 
 常见坑：
 
-- 把抓取当成浏览器自动化；web_fetch 不执行 JS，JS-heavy 站点要换 browser。
+- 只生成文本不落盘，后续就只能靠记忆碰运气。
 
-### 对比：OpenClaw vs Claude Code vs Codex vs “老式 agent”
+### 为什么它最近火（一个工程视角的解释）
 
-这里按同一套维度对齐：目标、运行位置、I/O、调度、工具、交付形态。
+一句话：很多人终于意识到，agent 的瓶颈不在“会不会推理”，而在“能不能长期在线把事做完”。
 
-- **OpenClaw**
-  - 目标：长期在线的个人助手/自动化运行时（渠道接入 + 工具编排 + 调度 + 交付）。
-  - 运行位置：本机/服务器的 Gateway 常驻进程。
-  - I/O：原生接聊天渠道；支持主动发送、定时触发。
-  - 调度：内置 cron/heartbeat。
-  - 工具：文件/命令/浏览器/消息/定时等。
-  - 交付：以 workspace 文件为中心（可版本化）。
+OpenClaw 把最容易被忽略的那部分做成了产品化能力：
 
-- **Claude Code**
-  - 目标：在“代码工作区”里做高质量编码协作（更像一个 IDE/Repo 里的 agent）。
-  - 运行位置：开发机本地 CLI/环境。
-  - I/O：主要面向 repo 文件、终端、测试；不以多渠道消息网关为核心。
-  - 调度：可以脚本化，但不把“长期在线调度器”作为产品核心。
-  - 工具：强在代码理解/修改/执行与迭代。
-  - 交付：以代码变更（diff/commit）为主。
+- 渠道 I/O（收发、状态、连接）
+- 调度（cron/heartbeat）
+- 工具边界（可验证的外部动作）
+- 交付介质（workspace 文件 + git）
 
-- **Codex（这里指模型/编码能力与其交互形态）**
-  - 目标：提供强编码/推理能力。
-  - 运行位置：取决于承载它的产品形态（IDE、API、CLI、网关）。
-  - I/O/调度/工具/交付：不是 Codex 本体决定，而是“外层运行时”决定。
-  - 结论：Codex 更像发动机；OpenClaw/Claude Code 更像整车（但车型不同）。
+这类能力不性感，但决定了“能不能每天用”。
 
-- **“老式 agent”（prompt + loop 的那类）**
-  - 目标：快速验证“能不能自动做事”。
-  - 常见短板：缺少稳定 I/O、权限边界与可追踪交付；跑久了之后状态不可控。
-  - OpenClaw 的差异：更强调工程边界（会话/工具/调度/权限/落盘）。
+### 对比：OpenClaw vs Claude Code vs Codex vs 传统 agent
 
-### 边界与 non-goals（避免误用）
+这里不搞玄学名词，按使用场景拆。
 
-- OpenClaw 不是一个“替你决定一切”的自治体；它更像一个可控的自动化执行环境。
-- OpenClaw 不替代网络/代理基础设施；如果出站不稳定，工具链会出现超时或失败。
-- OpenClaw 的优势来自“可验证与可追踪”，所以要尽量把结果落到 workspace（而不是只在聊天里飘）。
+**OpenClaw vs Claude Code**
+
+- Claude Code 更像“在 repo 里结对编程”：改代码、跑测试、迭代反馈是主线。
+- OpenClaw 更像“在收件箱/Telegram 里长期在线”：能按时触发、能跨工具做事、能把结果落到文件。
+- 直接结论：写代码时优先 Claude Code；“长期助手/自动化”优先 OpenClaw。两者不是替代关系。
+
+**OpenClaw vs Codex**
+
+- Codex 更像发动机（模型能力）。
+- OpenClaw 更像整车（运行时 + I/O + 调度 + 工具 + 交付）。
+- 所以对比 Codex 时，别纠结“谁更聪明”，先问：谁能让任务闭环可追踪。
+
+**OpenClaw vs prompt+loop agent**
+
+- prompt+loop 的问题不是“不能跑”，而是“跑久了状态不可控、结果不可追溯”。
+- OpenClaw 的取舍是工程化：宁可引入 Gateway/cron/workspace，也要把故障域和交付边界切清楚。
+
+### non-goals（避免误用）
+
+- OpenClaw 不替代网络/代理基础设施；出站不稳定会直接影响工具链。
+- OpenClaw 不是自治体；越强的 tool 越需要最小权限与审批边界。
 
 ### 总结
 
-- 作为使用手册的核心结论：先用 `status / channels / gateway` 把运行时状态确认清楚，然后围绕工具与调度建立可复用的工作流。
-- 作为架构理解的核心结论：Gateway 把 I/O 与推理解耦；Session 把多步任务串成可追踪回合；Tools 把外部动作变成可验证接口；Skills 把交付质量固定下来。
-- 作为对比结论：Claude Code 强在“代码协作”，OpenClaw 强在“长期在线 + 多渠道 + 调度 + 工具编排”，Codex 是能力内核而不是运行时。
+- OpenClaw 的主价值是“运行时”：在线、可调度、可工具化、可落盘。
+- 用它时优先围绕“任务闭环”组织概念，而不是背概念。
+- 与 Claude Code/Codex 的差异不在智商，而在“你要在什么场景把事做完”。
