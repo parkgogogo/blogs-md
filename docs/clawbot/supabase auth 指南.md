@@ -84,17 +84,30 @@ Cookie 策略：
 - 成功则回写新 token；失败则清空 cookie
 
 ```mermaid
-flowchart TD
-  A[Request /words/*] --> B{Has refresh token?}
-  B -- No --> Z[Pass through]
-  B -- Yes --> C{Access token near expiry?}
-  C -- No --> Z
-  C -- Yes --> D[refreshAuthSession]
-  D --> E{Refresh success?}
-  E -- Yes --> F[Set new access/refresh cookies]
-  E -- No --> G[Clear auth cookies]
-  F --> Z
-  G --> Z
+sequenceDiagram
+  participant R as Request /words/*
+  participant M as Middleware
+  participant S as Supabase Auth
+
+  R->>M: 请求进入受保护路由
+  M->>M: 检查 refresh token 是否存在
+  alt 无 refresh token
+    M-->>R: 直接放行
+  else 有 refresh token
+    M->>M: 判断 access token 是否临近过期
+    alt 未临近过期
+      M-->>R: 直接放行
+    else 临近过期
+      M->>S: refreshAuthSession(refreshToken)
+      alt 刷新成功
+        S-->>M: 新 access/refresh token
+        M-->>R: 回写 cookie 并放行
+      else 刷新失败
+        S-->>M: failed
+        M-->>R: 清空 cookie 并放行
+      end
+    end
+  end
 ```
 
 这层保证了“用户几乎无感续期”。
