@@ -26,13 +26,13 @@
 
 ```mermaid
 flowchart LR
-  A[pi-ai\n多 Provider 模型层] --> B[pi-agent-core\nAgent 状态机与事件流]
+  A[pi-ai\nMulti-provider model layer] --> B[pi-agent-core\nAgent state machine + event stream]
   B --> C[pi-coding-agent\nCLI/TUI/RPC/SDK]
-  B --> D[pi-web-ui\nWeb 组件与会话存储]
-  C --> E[Extensions/Skills/Prompts/Themes\n可插拔资源系统]
-  C --> F[Session/Compaction/Branching\n长期上下文机制]
-  G[pi-pods\nGPU/vLLM 运维] --> A
-  H[pi-mom\nSlack 自动化] --> C
+  B --> D[pi-web-ui\nWeb chat + artifacts]
+  C --> E[Extensions/Skills/Prompts/Themes\nPluggable resource system]
+  C --> F[Session/Compaction/Branching\nLong-running context]
+  G[pi-pods\nGPU/vLLM ops] --> A
+  H[pi-mom\nSlack automation] --> C
 ```
 
 这张图最关键的信息是：`pi-coding-agent` 不是硬编码“超大功能体”，而是架在 `pi-ai + pi-agent-core` 之上的产品层。

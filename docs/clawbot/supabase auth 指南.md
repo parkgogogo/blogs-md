@@ -21,18 +21,18 @@ sequenceDiagram
   participant M as Middleware
   participant P as Protected Page (/words)
 
-  U->>L: 点击 Continue with GitHub
+  U->>L: Click "Continue with GitHub"
   L->>S: supabase.auth.signInWithOAuth()
-  S-->>C: redirect back with code
+  S-->>C: Redirect back with code
   C->>S: exchangeCodeForSession(code)
   S-->>C: access_token + refresh_token
   C->>A: POST tokens
-  A->>A: 用 access_token 调 getUser 校验
-  A-->>C: set httpOnly cookies
+  A->>A: Validate via getUser(access_token)
+  A-->>C: Set httpOnly cookies
   C->>P: router.replace(next)
-  U->>P: 请求受保护页面
-  M->>M: 检查 token 是否临近过期
-  M-->>P: 未过期直通 / 过期则 refresh 后放行
+  U->>P: Request protected page
+  M->>M: Check if token is near expiry
+  M-->>P: Allow or refresh then allow
 ```
 
 ### 登录入口：`/login`
@@ -153,22 +153,22 @@ sequenceDiagram
   participant M as Middleware
   participant S as Supabase Auth
 
-  R->>M: 请求进入受保护路由
-  M->>M: 检查 refresh token 是否存在
-  alt 无 refresh token
-    M-->>R: 直接放行
-  else 有 refresh token
-    M->>M: 判断 access token 是否临近过期
-    alt 未临近过期
-      M-->>R: 直接放行
-    else 临近过期
+  R->>M: Request enters protected route
+  M->>M: Check if refresh token exists
+  alt No refresh token
+    M-->>R: Allow
+  else Refresh token exists
+    M->>M: Check if access token is near expiry
+    alt Not near expiry
+      M-->>R: Allow
+    else Near expiry
       M->>S: refreshAuthSession(refreshToken)
-      alt 刷新成功
-        S-->>M: 新 access/refresh token
-        M-->>R: 回写 cookie 并放行
-      else 刷新失败
+      alt Refresh success
+        S-->>M: New access/refresh tokens
+        M-->>R: Write cookies and allow
+      else Refresh failed
         S-->>M: failed
-        M-->>R: 清空 cookie 并放行
+        M-->>R: Clear cookies and allow
       end
     end
   end
@@ -265,13 +265,13 @@ sequenceDiagram
   participant O as OAuth Provider
   participant U as User Browser
 
-  C->>O: 请求 device_code + user_code
-  O-->>C: 返回验证地址与 user_code
-  C-->>U: 展示“请访问 URL 并输入验证码”
-  U->>O: 登录并授权
-  C->>O: 轮询 token endpoint（带 device_code）
+  C->>O: Request device_code + user_code
+  O-->>C: Return verification URL + user_code
+  C-->>U: Show "Open URL and enter code"
+  U->>O: Sign in and authorize
+  C->>O: Poll token endpoint (device_code)
   O-->>C: access_token + refresh_token
-  C->>C: 安全存储 token
+  C->>C: Store tokens securely
 ```
 
 ```ts
@@ -302,13 +302,13 @@ sequenceDiagram
   participant O as OAuth Provider
   participant L as localhost callback
 
-  C->>C: 生成 code_verifier/code_challenge
-  C->>B: 打开授权链接（带 code_challenge）
-  B->>O: 用户登录授权
-  O-->>L: 回调携带 code
-  C->>O: 用 code + code_verifier 换 token
+  C->>C: Generate code_verifier / code_challenge
+  C->>B: Open auth URL (code_challenge)
+  B->>O: User signs in and authorizes
+  O-->>L: Redirect with code
+  C->>O: Exchange code + code_verifier for tokens
   O-->>C: access_token + refresh_token
-  C->>C: 安全存储 token
+  C->>C: Store tokens securely
 ```
 
 ```ts
