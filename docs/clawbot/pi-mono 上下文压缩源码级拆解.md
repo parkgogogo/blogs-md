@@ -32,12 +32,12 @@
 
 ```mermaid
 flowchart TD
-  A[对话越来越长] --> B{是否快装不下?}
-  B -->|是| C[选一个切点 cut point]
-  C --> D[把切点之前写成总结页]
-  D --> E[把书签 firstKeptEntryId 记下来]
-  E --> F[重建上下文：总结页 + 书签后原文]
-  B -->|否| G[继续正常对话]
+  A[Conversation grows] --> B{Near the limit?}
+  B -->|Yes| C[Pick a cut point]
+  C --> D[Summarize before cut]
+  D --> E[Record bookmark firstKeptEntryId]
+  E --> F[Rebuild context: summary + kept messages]
+  B -->|No| G[Continue normally]
 ```
 
 一句话：

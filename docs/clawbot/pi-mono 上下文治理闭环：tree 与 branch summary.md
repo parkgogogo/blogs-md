@@ -32,9 +32,9 @@
 
 ```mermaid
 flowchart TD
-  A[会话越聊越长] --> B[compaction: 总结页 + 书签 + 最近工作集]
-  C[你在树上切换分支] --> D[branch summary: 给离开的分支立路牌]
-  D --> E[新分支继续时带着路牌信息]
+  A[Session grows] --> B[Compaction: checkpoint + bookmark + recent workset]
+  C[Switch branches in the tree] --> D[Branch summary: leave a signpost]
+  D --> E[Continue with signpost context]
   B --> E
 ```
 
