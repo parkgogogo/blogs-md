@@ -243,3 +243,94 @@ export const getAccessTokenFromRequest = (request: Request) => {
 **浏览器负责 OAuth 跳转与换码，服务端负责会话校验与 Cookie 落地，中间件负责续期，服务端页面/API 复用统一鉴权入口。**
 
 既兼顾了安全，也兼顾了 SSR 与用户体验。
+
+### 引申思考：CLI 工具如何做 OAuth
+
+CLI 没有天然浏览器上下文，常见做法有两类：
+
+- **Device Code Flow（设备码模式）**：CLI 显示验证码和授权地址，用户在浏览器输入验证码完成授权
+- **Loopback + PKCE（本地回调模式）**：CLI 打开系统浏览器登录，并在本地临时端口接收 OAuth 回调
+
+二者共同点：
+
+- CLI 不直接保存账号密码
+- 最终拿到的是 access token / refresh token
+- token 通常保存到本机凭据系统（keychain/credential manager）或本地配置
+
+### CLI OAuth 典型流程（Device Code）
+
+```mermaid
+sequenceDiagram
+  participant C as CLI
+  participant O as OAuth Provider
+  participant U as User Browser
+
+  C->>O: 请求 device_code + user_code
+  O-->>C: 返回验证地址与 user_code
+  C-->>U: 展示“请访问 URL 并输入验证码”
+  U->>O: 登录并授权
+  C->>O: 轮询 token endpoint（带 device_code）
+  O-->>C: access_token + refresh_token
+  C->>C: 安全存储 token
+```
+
+```ts
+// 伪代码：device code 轮询
+const { device_code, user_code, verification_uri } = await requestDeviceCode();
+console.log(`Open ${verification_uri} and enter code: ${user_code}`);
+
+while (true) {
+  const result = await pollToken(device_code);
+  if (result.status === "authorization_pending") {
+    await sleep(3000);
+    continue;
+  }
+  if (result.access_token) {
+    await saveToken(result);
+    break;
+  }
+  throw new Error(result.error || "oauth_failed");
+}
+```
+
+### CLI OAuth 典型流程（Loopback + PKCE）
+
+```mermaid
+sequenceDiagram
+  participant C as CLI
+  participant B as System Browser
+  participant O as OAuth Provider
+  participant L as localhost callback
+
+  C->>C: 生成 code_verifier/code_challenge
+  C->>B: 打开授权链接（带 code_challenge）
+  B->>O: 用户登录授权
+  O-->>L: 回调携带 code
+  C->>O: 用 code + code_verifier 换 token
+  O-->>C: access_token + refresh_token
+  C->>C: 安全存储 token
+```
+
+```ts
+// 伪代码：PKCE + 本地回调
+const { codeVerifier, codeChallenge } = createPkcePair();
+const authUrl = buildAuthUrl({ codeChallenge, redirectUri: "http://127.0.0.1:53682/callback" });
+openBrowser(authUrl);
+
+const code = await waitForLocalCallback();
+const token = await exchangeToken({ code, codeVerifier });
+await saveToken(token);
+```
+
+### 对比 Web 站点 OAuth 与 CLI OAuth
+
+- Web 站点：更强调浏览器会话 + Cookie 持久化
+- CLI 工具：更强调 token 安全存储 + 非浏览器环境可完成授权
+- Web 常见刷新点在中间件/后端；CLI 常见刷新点在每次命令执行前检查 token 过期
+
+### 实战建议（给 CLI 设计者）
+
+- 优先使用 provider 官方推荐 flow（优先 PKCE/Device Code）
+- token 尽量进系统 keychain，不要明文写入仓库
+- 预留 `logout/revoke` 命令，支持快速失效 token
+- 对 CI 场景单独设计（通常改用短期 PAT/OIDC，而不是交互式 OAuth）
