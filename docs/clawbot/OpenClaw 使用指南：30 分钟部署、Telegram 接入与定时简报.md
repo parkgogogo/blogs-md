@@ -1,185 +1,174 @@
-# OpenClaw 实操手记：把服务器变成你的自动化秘书
+# 自建 AI 网关：把聊天软件变成你的智能助手
 
-> 一句话摘要：读完能在 30 分钟内完成 OpenClaw 安装、配置 Telegram 连接，并设置一个每天自动推送日程与邮件摘要的 cron 任务。
+一个能在 72 小时内获得 60,000+ GitHub stars 的开源项目，背后站着 PSPDFKit 创始人 Peter Steinberger——OpenClaw 的爆火不是偶然。这是一款面向开发者的自托管 AI 网关，让你在自己机器上运行的 AI 助手，通过 Telegram、WhatsApp、Discord 等日常聊天软件与你对话。
 
-### 先把它跑起来
+**主线任务**：在本地运行 OpenClaw Gateway，连接 Telegram，发送第一条消息并获得 AI 回复。成功标志是在 Telegram 中收到 AI 助手的回复，且能在浏览器打开 Control UI 查看网关状态。
 
-```bash
-curl -fsSL https://openclaw.ai/install.sh | bash
-openclaw onboard --install-daemon
-openclaw gateway status
-openclaw channels add --channel telegram --token $TELEGRAM_BOT_TOKEN
-openclaw cron add --name "Morning brief" --cron "0 7 * * *" --message "Weather, calendar, top emails"
-```
+### 让它先跑起来
 
-让命令行熟练的工程师从零部署 OpenClaw，连接 Telegram，配置核心 Tools 与 Skills，并建立每日自动化简报。
-
-### 先让它能回你消息
+安装需要 Node.js 22 或更高版本。运行全局安装：
 
 ```bash
-# 1. 安装
-curl -fsSL https://openclaw.ai/install.sh | bash
-
-# 2. 初始化
-openclaw onboard --install-daemon
-
-# 3. 检查服务
-openclaw gateway status
-
-# 4. 创建 Telegram Bot（需提前从 @BotFather 获取 token）
-export TELEGRAM_BOT_TOKEN="YOUR_TOKEN"
-openclaw channels add --channel telegram --token $TELEGRAM_BOT_TOKEN
-
-# 5. 配对
-# 等待 Telegram 收到配对码，然后执行：
-openclaw pairing approve telegram <CODE>
-
-# 6. 发送测试消息
-openclaw message send --target @your_telegram_username --message "OpenClaw 已上线"
+npm install -g openclaw@latest
 ```
 
-**成功标志**：
-- `openclaw gateway status` 显示 `"status": "running"`
-- Telegram 收到机器人的配对码并批准
-- 测试消息成功送达你的 Telegram
+安装完成后，执行 onboarding 向导：
 
-### 这些部件你要盯住哪几个
+```bash
+openclaw onboard --install-daemon
+```
 
-#### Gateway：单进程控制中心
-- **入口**：`openclaw gateway`（默认端口 18789）
-- **取舍**：所有频道连接、会话路由、Agent 调度都集中在一个进程，简化了部署但要求该进程 24/7 运行。
-- **边界**：默认仅绑定 `localhost`；远程访问需 SSH 隧道或 Tailscale（`--bind tailnet`）。生产部署建议用 `systemd` 或 Docker 保持常驻。
+这个向导会引导你完成 Gateway 初始化、API 密钥配置（推荐 Anthropic）、以及系统服务的安装。`--install-daemon` 参数会同时安装后台服务，让 Gateway 随系统启动。
 
-#### Tools：25 个器官
-- **入口**：`~/.openclaw/openclaw.json` 中的 `tools.allow` 列表
-- **取舍**：每个 Tool 对应一类系统能力（文件读写、命令执行、网页浏览、消息发送等）。开启越多，能力越强，攻击面也越大。
-- **边界**：高风险 Tool（如 `exec`、`message`）可配置审批（`approvals.exec.enabled: true`）。`message` 默认只发给自己，避免误发他人。
+现在启动 Gateway：
 
-#### Skills：53 本教科书
-- **入口**：`skills.allowBundled` 白名单、`npx clawhub install <skill-name>`
-- **取舍**：Skills 不增加权限，只教 OpenClaw 如何组合 Tools 完成任务。默认全加载，但建议按需白名单。
-- **边界**：Skill 生效需满足三个条件：1) 对应 Tool 已启用；2) 所需 CLI 工具已安装；3) 必要的 API 密钥或授权已完成。例如 `gog` Skill 需要 `exec` Tool、`gog` CLI 和 Google OAuth。
+```bash
+openclaw gateway --port 18789 --verbose
+```
 
-#### Workspace：一切皆文件
-- **路径**：`~/clawd/`（默认）
-- **内容**：`AGENTS.md`（人格定义）、`SOUL.md`（核心指令）、`TOOLS.md`（本地备忘）、`memory/YYYY-MM-DD.md`（日常记忆）、`skills/`（自定义技能）。
-- **边界**：Workspace 是 Agent 的"大脑"，可版本控制、可备份、可跨机器同步。
+你会看到 Control UI 运行在 http://127.0.0.1:18789/。打开浏览器访问这个地址，能看到网关状态页——这证明 Gateway 已经正常工作。
 
-#### Cron + Message：自动化引擎
-- **入口**：`openclaw cron add --name "任务名" --cron "* * * * *" --message "提示词"`
-- **取舍**：定时任务在 Gateway 进程内执行，依赖 Gateway 持续运行。失败无自动重试（需外部监控）。
-- **边界**：Cron 表达式支持标准五段格式；Message 可发送到任何已配置的频道（Telegram、Discord、Slack 等）。
+如果之前没有使用 `--install-daemon`，也可以用以下命令让 Gateway 作为服务运行：
 
-### 两个自动化例子
+```bash
+openclaw gateway install
+```
 
-#### 每日自动化简报（天气 + 日程 + 邮件摘要）
-**目标**：每天早晨 7 点收到 Telegram 推送，包含今日日程、待回复邮件、天气预报。
+Gateway 支持热重载配置，大多数配置变更无需重启。热重载模式默认是 `hybrid`：安全变更即时生效，关键变更自动重启。你也可以设置为 `hot`（只热应用安全变更）、`restart`（任何变更都重启）或 `off`（完全关闭）。
 
-**步骤**：
-1. 确保已安装 `gog` Skill（Google Workspace）和 `weather` Skill：
-   ```bash
-   npx clawhub install gog
-   npx clawhub install weather
-   ```
-2. 配置 `~/.openclaw/openclaw.json`，启用必要的 Tools 和 Skills：
-   ```json
-   {
-     "tools": {
-       "allow": ["read", "write", "exec", "web_search", "web_fetch", "message", "cron"]
-     },
-     "skills": {
-       "allowBundled": ["gog", "weather", "summarize"]
-     }
-   }
-   ```
-3. 运行 `openclaw configure` 按向导完成 Google OAuth 和天气 API 设置。
-4. 创建 cron 任务：
-   ```bash
-   openclaw cron add --name "Morning brief" --cron "0 7 * * *" --message "Check calendar for today's events, fetch unread emails from Gmail, summarize urgent ones, get weather for my location, send a consolidated report to me via Telegram."
-   ```
-5. 验证任务已添加：
-   ```bash
-   openclaw cron list
-   ```
+### 接入 Telegram：最简单的一步
 
-**成功标志**：第二天 7:00 Telegram 收到一条包含日程、邮件摘要、天气的消息。
+在所有支持的聊天平台中，Telegram 配置最为简单——你不需要扫描二维码，不需要手机保持在线，只需一个 bot token。
 
-**常见坑**：
-- Google OAuth 需在浏览器完成，确保 Gateway 运行时网络可达。
-- 天气 Skill 需要配置位置（默认用 IP 定位，可能不准）。
-- Cron 任务依赖 Gateway 进程；若 Gateway 重启，需重新加载 cron（`openclaw cron list` 会显示）。
+找 @BotFather 创建新 bot，拿到 token（格式如 `123456789:ABCdefGHIjklMNOpqrsTUVwxyz`）。然后在 Gateway 的 Control UI 配置页面，或直接用 CLI 添加：
 
-#### GitHub CI 失败监控与通知
-**目标**：当 GitHub Actions 失败时，OpenClaw 自动读取日志、分析原因，并推送诊断到 Telegram。
+```bash
+openclaw config set channels.telegram.botToken "你的token"
+openclaw config set channels.telegram.enabled true
+```
 
-**步骤**：
-1. 安装 `github` Skill：
-   ```bash
-   npx clawhub install github
-   ```
-2. 配置 GitHub CLI `gh` 并登录（`gh auth login`）。
-3. 在 `~/.openclaw/openclaw.json` 中启用 `github` Skill：
-   ```json
-   {
-     "skills": {
-       "allowBundled": ["github"]
-     }
-   }
-   ```
-4. 编写一个 shell 脚本（例如 `check-ci.sh`），用 `gh` 获取最近失败的 workflow 并调用 OpenClaw：
-   ```bash
-   #!/bin/bash
-   FAILED_RUNS=$(gh run list --limit 5 --json conclusion,databaseId --jq '.[] | select(.conclusion == "failure") | .databaseId')
-   for run_id in $FAILED_RUNS; do
-     LOGS=$(gh run view $run_id --log-failed)
-     openclaw message send --target @your_telegram_username --message "CI failed: $run_id. Logs: $LOGS"
-   done
-   ```
-5. 将该脚本加入 cron（每 5 分钟检查一次）：
-   ```bash
-   openclaw cron add --name "CI monitor" --cron "*/5 * * * *" --message "Run /path/to/check-ci.sh"
-   ```
+Telegram 通道默认使用 `pairing` 模式：陌生用户首次发送消息时，会被要求等待配对批准，你不会收到未经同意的消息。配对码是 8 位大写字母，有效期 1 小时。
 
-**成功标志**：GitHub Action 失败后 5 分钟内，Telegram 收到带 run ID 和日志摘要的消息。
+在 Telegram 向你的 bot 发送任意消息，然后查看 Gateway 日志：
 
-**常见坑**：
-- `gh` CLI 需在 OpenClaw 运行环境安装并授权。
-- 日志可能很长，Telegram 有消息长度限制；可让 OpenClaw 先本地摘要再发送。
-- 高频检查可能触发 GitHub API 限流；酌情调整间隔。
+```bash
+openclaw logs --follow
+```
 
-### 什么时候不该用 OpenClaw
+你会看到一条配对请求，包含类似 `CODE: ABCD1234` 的配对码。批准它：
 
-**OpenClaw vs. ChatGPT / Claude Desktop**
+```bash
+openclaw pairing approve telegram ABCD1234
+```
 
-| 维度          | OpenClaw                                      | ChatGPT / Claude Desktop          |
-|---------------|-----------------------------------------------|------------------------------------|
-| **目标**      | 自托管 AI 助手，可执行系统操作、自动化任务     | 云端聊天机器人，文本生成与对话     |
-| **运行位置**  | 本地或私有服务器（Gateway 常驻）               | 厂商服务器                         |
-| **I/O**       | 直接读写文件、执行命令、控制浏览器、发送消息   | 仅文本输入输出                     |
-| **调度**      | 内置 cron 定时任务                            | 无调度能力                         |
-| **工具**      | 25+ Tools（器官）、50+ Skills（教科书）       | 有限插件（需手动开启）             |
-| **交付物**    | 动作（文件、命令、消息）                      | 文本回复                           |
-| **配置方式**  | 配置文件 `~/.openclaw/openclaw.json`、CLI 命令 | 图形界面设置                       |
-| **扩展性**    | 可自定 Skills、集成任意 CLI 工具              | 受限的插件市场                     |
-| **隐私**      | 数据留在本地/私有云                           | 数据经过厂商服务器                 |
+现在发送测试消息：
 
-**取舍**：OpenClaw 赋予你完全的控制权和自动化能力，代价是更高的部署和维护成本；ChatGPT 开箱即用，但无法直接操作系统资源。
+```bash
+openclaw message send --channel telegram --target @你的bot用户名 --message "你好"
+```
 
-### 这篇不解决哪些坑
+或在 Telegram 中直接向 bot 发送消息。如果一切正常，AI 助手会在几秒内回复。这就是成功标志：消息发出，回复收到，Gateway 的 Control UI 显示活跃会话。
 
-本文不覆盖：
-- OpenClaw 源码编译与贡献流程
-- 每个 Skill 的详细用法（共 53 个）
-- 多节点部署（Gateway + 多个 Node Host）
-- 深度定制 AGENTS.md、SOUL.md 的人格设计
-- 与其他自托管 AI 助手（如 GPT4All、LocalAI）的对比
+### 控制谁能发消息给你
 
-### 下一步你唯一要做的事
+自托管的核心是你掌控数据边界。OpenClaw 的安全模型基于白名单而非黑名单。
 
-1. **立即执行**：运行 `curl -fsSL https://openclaw.ai/install.sh | bash` 安装 OpenClaw。
-2. **配置 Telegram**：用 `openclaw channels add --channel telegram` 连接你的手机。
-3. **启用核心 Tools**：编辑 `~/.openclaw/openclaw.json`，在 `tools.allow` 中加入 `["read","write","exec","web_search","web_fetch","message","cron"]`。
-4. **安装必备 Skills**：`npx clawhub install gog weather github`。
-5. **设置每日简报**：`openclaw cron add --name "Morning brief" --cron "0 7 * * *" --message "Weather, calendar, top emails"`。
-6. **验证状态**：`openclaw gateway status` 应返回 `"status": "running"`。
-7. **开始对话**：在 Telegram 中给你的 Bot 发送 "今天有什么日程？"。
+默认 `dmPolicy` 是 `pairing`，适合个人使用：每个新对话者都需要你显式批准。如果你只想让特定用户访问，可以改用 `allowlist` 模式：
+
+```bash
+openclaw config set channels.telegram.dmPolicy allowlist
+openclaw config set channels.telegram.allowFrom '["你的telegram_id", "同事id"]'
+```
+
+Telegram ID 是数字格式。想安全获取自己的 ID，无需使用第三方 bot：直接向 bot 发消息，然后从 `openclaw logs --follow` 的 `from.id` 字段读取。
+
+`allowFrom` 支持多种格式：纯数字 ID、带 `@` 的用户名、或带 `telegram:` / `tg:` 前缀的形式。OpenClaw 会自动归一化。
+
+还有一个更开放但不推荐的模式 `open`：允许任何人发消息。这需要同时设置 `allowFrom` 包含 `"*"` 才会生效。
+
+对于群聊，策略独立控制。`groupPolicy` 默认是 `allowlist`，只允许白名单内成员在群中触发 bot。`requireMention` 默认为 true，意味着 bot 只在被 `@` 时响应。
+
+### 理解 Gateway 的决策边界
+
+Gateway 不只是聊天机器人的中间层——它是 sessions、routing、channel connections 的单一真相源。这是你与 AI 助手之间的控制平面。
+
+当消息从 Telegram 进入，Gateway 会：
+
+1. 验证发送者身份（检查配对状态和白名单）
+2. 创建或恢复 session（基于聊天 ID 隔离）
+3. 将消息路由给 agent runtime
+4. 收集 AI 回复并通过原通道返回
+
+Session 数据存储在 `~/.openclaw/agents/<agent>/sessions/<session>.jsonl`，每行一条消息记录。这意味着你的对话历史完全保存在本地，不会上传到任何第三方——除非你使用远程模型 API。
+
+配置存储在 `~/.openclaw/openclaw.json`。这是个可选文件；如果不存在，OpenClaw 使用安全默认值运行。配置支持环境变量替换，语法是 `${VAR_NAME}`：
+
+```json
+{
+  "models": {
+    "providers": {
+      "anthropic": {
+        "apiKey": "${ANTHROPIC_API_KEY}"
+      }
+    }
+  }
+}
+```
+
+缺失的环境变量会在加载时报错。如果需要字面量 `$`，用 `$${VAR}` 转义。
+
+### 它能做什么：从发消息到控制浏览器
+
+OpenClaw 内置的工具集覆盖常见自动化场景：
+
+- **browser**：控制浏览器访问网页、截屏、执行页面操作
+- **canvas**：可视化工作区，支持 agent 驱动的图形界面
+- **nodes**：管理配对设备（iOS/Android/macOS 节点）
+- **cron**：定时任务调度
+- **fs/filesystem**：文件系统操作
+- **exec**：执行 shell 命令（可配置沙箱）
+
+工具权限通过 profiles 控制：`minimal`（仅 session 状态）、`coding`（文件+运行时+会话）、`messaging`（消息相关）、`full`（全部工具）。你也可以用工具组 shorthand，如 `group:runtime`、`group:fs`、`group:web`。
+
+Agent 每次启动时会读取工作区中的 bootstrap 文件：`AGENTS.md`（代理规范）、`SOUL.md`（身份定义）、`TOOLS.md`（工具笔记）、`IDENTITY.md`（身份详情）、`USER.md`（用户偏好）。这些 Markdown 文件作为系统提示词的一部分注入，让 AI 助手了解上下文。
+
+### 常见问题排查
+
+如果 Gateway 启动失败，先运行诊断：
+
+```bash
+openclaw doctor
+```
+
+这个命令会检查配置合法性、OAuth token 有效期、目录权限、以及 Gateway 健康状态。添加 `--fix` 参数可以自动修复可修复的问题（如配置格式迁移、权限调整）。
+
+如果配置验证失败，Gateway 不会启动，只有诊断命令可用。这是安全设计：错误的配置可能导致安全漏洞或数据丢失。
+
+端口冲突是常见问题。Gateway 默认使用 18789。如果启动时报端口被占用，检查是否有其他 Gateway 实例在运行，或 SSH 隧道占用了该端口。`openclaw doctor` 会自动检测这种情况。
+
+另一个常见问题是权限。如果运行 Gateway 的用户和安装时的用户不同，可能导致状态目录无法写入。检查 `~/.openclaw` 目录的所有权。
+
+### 下一步
+
+现在你已经有一个工作的 Gateway 和 Telegram 通道。接下来可以：
+
+1. **连接更多平台**：WhatsApp（需 QR 配对）、Discord、Slack、Signal 等都支持。同时启用多个通道时，OpenClaw 会根据消息来源路由回复。
+
+2. **配置定时任务**：使用 `openclaw cron add` 创建周期性任务。语法类似 cron，但触发的是 agent 而非 shell 命令。
+
+3. **探索 Control UI**：http://127.0.0.1:18789/ 提供配置管理、会话查看、以及实时日志。你可以在这里调整配置而无需编辑 JSON 文件。
+
+4. **备份工作区**：`~/.openclaw/workspace/` 包含你的自定义技能和代理配置。建议用 git 管理，方便迁移和版本控制。
+
+5. **阅读安全建议**：执行 `openclaw doctor` 会提示潜在的安全风险配置，比如开放的 DM 策略或缺失的 Gateway 认证 token。
+
+---
+
+**参考与延伸阅读**
+
+- OpenClaw 官方文档：https://docs.openclaw.ai/
+- GitHub 仓库：https://github.com/openclaw/openclaw
+- DigitalOcean 入门指南：https://www.digitalocean.com/resources/articles/what-is-openclaw
+- 配置文件参考：https://docs.openclaw.ai/gateway/configuration
+- 聊天通道文档：https://docs.openclaw.ai/channels
+- Agent 运行时详解：https://docs.openclaw.ai/concepts/agent
