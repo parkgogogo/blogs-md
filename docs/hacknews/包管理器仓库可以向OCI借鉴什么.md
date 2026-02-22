@@ -175,12 +175,16 @@ No individual choice here is wrong, but seventeen different answers to the same 
 | Maven | .jar (zip) | 编译后的 .class 文件 + META-INF/MANIFEST.MF |
 | Cargo | .crate (gzip tar) | 源码 + Cargo.toml + Cargo.lock |
 | NuGet | .nupkg (zip) | DLL 程序集 + .nuspec XML 元数据 |
+
 | Homebrew | .bottle.tar.gz | 安装在前缀下的编译二进制文件 |
+
 | Go | .zip | 位于 module@version/ 路径前缀下的源码 |
 | Hex | 外层 tar 包含内层文件 | VERSION + metadata.config + contents.tar.gz + CHECKSUM |
 | Debian | .deb (ar 归档) | debian-binary + control.tar.* + data.tar.* |
+
 | RPM | 自定义二进制格式 | 头部区块 + cpio 负载 (v4) 或自定义格式 (v6) |
 | Alpine | 拼接的 gzip 流 | 签名 + 控制 tar + 数据 tar |
+
 | Conda | .conda (zstd tar 的 zip) 或 .tar.bz2 | info/ 元数据 + 包内容 |
 | Dart/pub | .tar.gz | 源码 + pubspec.yaml |
 | Swift PM | .zip | 源码归档 |

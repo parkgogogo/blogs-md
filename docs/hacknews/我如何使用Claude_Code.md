@@ -134,18 +134,23 @@ Some real examples of comments I might add:
 我可能会添加的一些真实注释示例：
 
 - "Use drizzle:generate for migrations, not raw SQL" — domain knowledge Claude doesn't have
+
 - "使用 drizzle:generate 进行迁移，而不是原始 SQL" —— Claude 不具备的领域知识
 
 - "No — this should be PATCH, not PUT" — correcting a wrong assumption
+
 - "不 —— 这应该是 PATCH，不是 PUT" —— 纠正错误的假设
 
 - "Remove this section entirely, we don't need caching here" — rejecting a proposed approach
+
 - "完全删除这一节，我们这里不需要缓存" —— 拒绝提议的方法
 
 - "The queue consumer already handles retries, so this retry logic is redundant. Delete it and just let it fail" — explaining why something should change
+
 - "队列消费者已经处理了重试，所以这个重试逻辑是多余的。删除它，直接让它失败" —— 解释为什么某事应该改变
 
 - "This is wrong, the visibility field needs to be on the list itself, not on individual items. When the list is public, all items are public. Restructure the schema section accordingly" — redirecting an entire section of the plan
+
 - "这是错的，可见性字段需要放在列表本身上，而不是单个项目上。当列表是公开时，所有项目都是公开的。相应地重新构建模式部分" —— 重定向计划的整个部分
 
 Then I send Claude back to the document:
@@ -218,21 +223,27 @@ This single prompt encodes everything that matters:
 这个单一的提示编码了所有重要的内容：
 
 - "Implement everything": Complete everything in the plan, don't cherry-pick
+
 - "全部实现"：完成计划中的所有内容，不要挑三拣四
 
 - "mark it as done in the plan document": The plan is the source of truth for progress
+
 - "在计划文档中将其标记为已完成"：计划是进度的真实来源
 
 - "Don't stop until all tasks and phases are complete": Don't stop halfway waiting for confirmation
+
 - "不要停止，直到所有任务和阶段都完成"：不要中途停下来等待确认
 
 - "Don't add unnecessary comments or JSDoc": Keep the code clean
+
 - "不要添加不必要的注释或 JSDoc"：保持代码整洁
 
 - "don't use any or unknown types": Maintain strict typing
+
 - "不要使用 any 或 unknown 类型"：保持严格类型
 
 - "Continuously run type checking": Catch issues early, not at the end
+
 - "持续运行类型检查"：尽早发现问题，而不是最后
 
 I use this exact wording in almost every implementation session (with minor variations). When I say "Implement everything", every decision has already been made and verified. Implementation becomes mechanical rather than creative. This is deliberate. I want implementation to be boring. The creative work happens in the annotation loop. Once the plan is right, execution should be straightforward.
@@ -269,6 +280,7 @@ Planning comments might be a paragraph, but implementation corrections are often
 - "你没有实现 deduplicateByTitle 函数。"
 
 - "You built the settings page in the main app, but it should be in the admin app, move it."
+
 - "你把设置页面建在了主应用中，但它应该在管理应用中，移动它。"
 
 Claude has the full context of the plan and the ongoing session, so concise corrections are sufficient.
@@ -280,12 +292,15 @@ Frontend work is the most iterative part. I test in the browser and fire off rap
 前端工作是最具迭代性的部分。我在浏览器中测试并快速发出更正：
 
 - "wider"
+
 - "更宽"
 
 - "still truncated"
+
 - "还是被截断了"
 
 - "2px gap"
+
 - "有 2px 的间隙"
 
 For visual issues, I sometimes attach screenshots. A screenshot of a misaligned table communicates the problem faster than describing it.
@@ -297,6 +312,7 @@ I also frequently reference existing code:
 我也经常引用现有代码：
 
 - "This table should look exactly like the user table, same headers, same pagination, same row density."
+
 - "这个表格应该看起来完全像用户表格，相同的表头、相同的分页、相同的行密度。"
 
 This is more precise than describing the design from scratch. Most features in a mature codebase are variations on existing patterns. A new settings page should look like existing settings pages. Pointing to reference code conveys all the implicit requirements without listing them. Claude usually reads the reference file before making the correction.
@@ -308,6 +324,7 @@ When something goes in the wrong direction, I don't try to patch it. I revert an
 当某事走向错误的方向时，我不会试图修补它。我通过放弃 git 更改来恢复和重新确定范围：
 
 - "I reverted everything. Now all I want is for the list view to be cleaner — nothing else."
+
 - "我恢复了所有内容。现在我想要的只是让列表视图更简洁 —— 其他什么都不做。"
 
 Rescoping after a revert almost always produces better results than trying to fix a bad approach incrementally.

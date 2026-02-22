@@ -148,7 +148,7 @@ Cognitive debt tends not to announce itself through failing builds or subtle bug
 
 认知债务往往不会通过构建失败或部署后的细微bug来宣告自己的存在，而是通过共同理论的悄然丧失来显现。
 
-As generative and agentic AI accelerate development, protecting that shared theory of what the software does and how it can change may matter more for long-term software健康 than any single metric of speed or output.
+As generative and agentic AI accelerate development, protecting that shared theory of what the software does and how it can change may matter more for long-term软件健康 than any single metric of speed or output.
 
 随着生成式和代理式AI加速开发，保护关于软件做什么以及如何变化的共同理论，对于长期软件健康可能比任何单一的速度或产出指标都更重要。
 
