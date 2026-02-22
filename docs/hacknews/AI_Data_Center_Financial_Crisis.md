@@ -1,6 +1,4 @@
-# AI数据中心财务危机 / AI Data Center Financial Crisis
-
-> 原文链接 / Original URL: https://www.wheresyoured.at/data-center-crisis/
+URL: https://www.wheresyoured.at/data-center-crisis/
 
 ---
 
@@ -152,7 +150,7 @@ Based on hours of discussion with data center professionals, analysts and econom
 
 Yet things get worse when you factor in the actual financial reality of these deals — and the debt attached to them.
 
-然而，当你面对这些交易的实际财务现实——以及与之相关的债务时，情况会进一步恶化。
+然而，当你将债务成本考虑在内时，情况只会变得更糟。
 
 Based on my current model of the 1 gigawatt Stargate Abilene data center, Oracle likely plans to make roughly $11 billion a year in revenue from 1.2 gigawatts (or roughly 880 megawatts of critical IT load). While that sounds good, when you add depreciation, power costs, $1 billion a year in hosting costs from Crusoe, operating expenses and numerous other costs, its margins are a miserable 27.2% — and that's assuming OpenAI actually pays on time and reliably.
 

@@ -1,4 +1,3 @@
-Title: AI吸血鬼 (The AI Vampire)
 URL: https://steve-yegge.medium.com/the-ai-vampire-eda6e4f07163
 
 This was an unusually hard post to write, because it flies in the face of everything else going on.
@@ -595,7 +594,7 @@ They all looked at me, wide-eyed, never having EVER thought of it from this pers
 
 I don't think they fully believed me, but at least I got them thinking about it.
 
-我不认为他们完全相信我，但至少我让他们开始思考这个问题了。
+我不认为他们完全相信我，但至少我让他们开始思考这个问题。
 
 As for my part, I went ahead and dialed that denominator down, and lived life a bit while I was at Amazon, because fuck extraction.
 

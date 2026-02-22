@@ -1,7 +1,4 @@
-# Gwtar: a static efficient single-file HTML format
-# Gwtar：一种静态高效的单文件 HTML 格式
-
-**Original URL**: https://simonwillison.net/2026/Feb/15/gwtar/
+URL: https://simonwillison.net/2026/Feb/15/gwtar/
 **原文链接**: https://simonwillison.net/2026/Feb/15/gwtar/
 
 ---

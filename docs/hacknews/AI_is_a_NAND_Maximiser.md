@@ -1,7 +1,5 @@
 URL: https://shkspr.mobi/blog/2026/02/ai-is-a-nand-maximiser/
 
-# AI is a NAND Maximiser / AI 是一个 NAND 最大化器
-
 [PC Gamer reports](https://www.pcgamer.com/hardware/memory/many-consumer-electronics-manufacturers-will-go-bankrupt-or-exit-product-lines-by-the-end-of-2026-due-to-the-ai-memory-crisis-phison-ceo-reportedly-says/) that the demand for computer chips from artificial intelligence companies is having a catastrophic impact on the rest of the industry.
 
 [PC Gamer 报道称](https://www.pcgamer.com/hardware/memory/many-consumer-electronics-manufacturers-will-go-bankrupt-or-exit-product-lines-by-the-end-of-2026-due-to-the-ai-memory-crisis-phison-ceo-reportedly-says/)，目前人工智能公司对计算机芯片的需求正在对行业其他部分造成灾难性影响。

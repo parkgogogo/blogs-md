@@ -1,4 +1,3 @@
-Title: Intel 8087 浮点芯片中的指令解码 / Instruction decoding in the Intel 8087 floating-point chip
 URL: http://www.righto.com/2026/02/8087-instruction-decoding.html
 
 In the 1980s, if you wanted your IBM PC to run faster, you could buy the Intel 8087 floating-point coprocessor chip. With this chip, CAD software, spreadsheets, flight simulators, and other programs were much speedier. The 8087 chip could add, subtract, multiply, and divide, of course, but it could also compute transcendental functions such as tangent and logarithms, as well as provide constants such as π. In total, the 8087 added 62 new instructions to the computer.
@@ -255,67 +254,4 @@ For updates, follow me on Bluesky (@righto.com), Mastodon (@kenshirriff@oldbytes
 
 10. The instruction decoding PLA has 22 entries, and the jump table also has 22 entries. It's a coincidence that these values are the same. An entry in the jump table ROM is selected by five bits of the micro-instruction. The ROM is structured with two 11-bit words per row, interleaved. (It's also a coincidence that there are 22 bits.) The upper four bits of the jump number select a row in the ROM, while the bottom bit selects one of the two rows. This implementation is modified for target 0, the three-way jump. The first ROM row is selected for target 0 if the current instruction is multiplication, or for target 1. The second row is selected for target 0 if the current instruction is addition or subtraction, or for target 2. The third row is selected for target 0 if the current instruction is division, or for target 3. Thus, target 0 ends up selecting rows 1, 2, or 3. However, remember that there are two words per row, selected by the low bit of the target number. The problem is that target 0 with multiplication will access the left word of row 1, while target 1 will access the right word of row 1, but both should provide the same address. The solution is that rows 1, 2, and 3 have the same address stored twice in the row, so these rows each "waste" a value.
 
-    指令解码 PLA 有 22 个条目，跳转表也有 22 个条目。这些值相同是巧合。跳转表 ROM 中的一个条目由微指令的 5 位选择。ROM 的结构是每行两个 11 位字，交错排列。（有 22 位也是巧合。）跳转号的高 4 位选择 ROM 中的一行，而最低位选择两行之一。此实现针对目标 0（三分支跳转）进行了修改。如果当前指令是乘法，则选择第一行 ROM 作为目标 0，或作为目标 1。如果当前指令是加法或减法，则选择第二行作为目标 0，或作为目标 2。如果当前指令是除法，则选择第三行作为目标 0，或作为目标 3。因此，目标 0 最终选择第 1、2 或 3 行。然而，请记住，每行有两个字，由目标号的低位选择。问题在于目标 0 与乘法将访问第 1 行的左字，而目标 1 将访问第 1 行的右字，但两者都应提供相同的地址。解决方案是第 1、2 和 3 行在每行中存储相同的地址两次，因此这些行每个都"浪费"一个值。
-
-11. Eleven instructions are implemented in the BIU hardware. Four of these are relatively simple, setting or clearing bits: FINIT (initialize), FENI (enable interrupts), FDISI (disable interrupts), and FCLEX (clear exceptions). Six of these are more complicated, storing state to memory or loading state from memory: FLDCW (load control word), FSTCW (store control word), FSTSW (store status word), FSTENV (store environment), FLDENV (load environment), FSAVE (save state), and FRSTOR (restore state). As explained elsewhere, the last two instructions are partially implemented in microcode.
-
-    十一个指令在 BIU 硬件中实现。其中四个相对简单，设置或清除位：FINIT（初始化）、FENI（启用中断）、FDISI（禁用中断）和 FCLEX（清除异常）。其中六个更为复杂，将状态存储到内存或从内存加载状态：FLDCW（加载控制字）、FSTCW（存储控制字）、FSTSW（存储状态字）、FSTENV（存储环境）、FLDENV（加载环境）、FSAVE（保存状态）和 FRSTOR（恢复状态）。如其他地方所解释的，最后两个指令部分在微码中实现。
-
-12. Even a seemingly trivial instruction uses more circuitry than you might expect. For instance, after the FCLEX (clear exception) instruction is decoded, the signal goes through nine gates before it clears the exception bits in the status register. Along the way, it goes through a flip-flop to synchronize the timing, a gate to combine it with the reset signal, and various inverters and drivers. Even though these instructions seem like they should complete immediately, they typically take 5 clock cycles due to overhead in the 8087.
-
-    即使看似微不足道的指令也使用比你预期更多的电路。例如，FCLEX（清除异常）指令解码后，信号在清除状态寄存器中的异常位之前通过九个门。在此过程中，它经过一个触发器以同步时序，一个门将其与复位信号组合，以及各种反相器和驱动器。尽管这些指令看起来应该立即完成，但它们通常由于 8087 的开销而需要 5 个时钟周期。
-
-13. I'll give more details here on the circuit that jumps to the save or restore microcode. The BIU sends two signals to the microcode engine, one to jump to the save code and one to jump to the restore code. These signals are buffered and delayed by a capacitor, probably to adjust the timing of the signal. In the microcode engine, there are two hardcoded constants for the routines, just above the jump table; the BIU signal causes the appropriate constant to go onto the micro-address lines. Each bit in the address has a pull-up transistor to +5V or a pull-down transistor to ground. This approach is somewhat inefficient since it requires two transistor sites per bit. In comparison, the jump address ROM and the instruction address ROM use one transistor site per bit.
-
-    我将在这里提供更多关于跳转到保存或恢复微码的电路的详细信息。BIU 向微码引擎发送两个信号，一个跳转到保存代码，一个跳转到恢复代码。这些信号由电容器缓冲和延迟，可能是为了调整信号的时序。在微码引擎中，有两个硬编码常量用于例程，就在跳转表上方；BIU 信号导致适当的常量进入微地址线。地址中的每一位都有一个到 +5V 的上拉晶体管或一个到地的下拉晶体管。这种方法有些低效，因为每位需要两个晶体管位。相比之下，跳转地址 ROM 和指令地址 ROM 使用每个位一个晶体管位。
-
-    https://static.righto.com/images/8087-decode/capacitors.jpg
-    Two capacitors in the 8087. This photo shows the metal layer with the silicon and polysilicon underneath. Since capacitors are somewhat unusual in NMOS circuits, I'll show them in the photo above. If a polysilicon line crosses over doped silicon, it creates a transistor. However, if a polysilicon region sits on top of the doped silicon without crossing it, it forms a capacitor instead.
-
-    8087 中的两个电容器。这张照片显示了金属层，下方有硅和多晶硅。由于电容器在 NMOS 电路中有些不寻常，我将在上面的照片中展示它们。如果多晶硅线穿过掺杂硅，它会创建一个晶体管。然而，如果多晶硅区域位于掺杂硅上方而不穿过它，它会形成一个电容器。（晶体管也存在电容，但栅极电容通常是不需要的。）
-
-14. The documentation provides a hint that the microcode to load constants is complicated. Specifically, the documentation shows that different constants take different amounts of time to load. For instance, log2(e) takes 18 cycles while log2(10) takes 19 cycles and log10(2) takes 21 cycles. You'd expect that pre-computed constants would all take the same time, so the varying times show that more is happening behind the scenes.
-
-    文档提供了一个提示，即加载常数的微码很复杂。具体来说，文档显示不同的常数需要不同的时间来加载。例如，log2(e) 需要 18 个周期，而 log2(10) 需要 19 个周期，log10(2) 需要 21 个周期。你会期望预计算的常数都需要相同的时间，因此变化的时间表明幕后发生了更多的事情。
-
----
-
-## 批判性思考评论 / Critical Thinking Commentary
-
-### 作者的主要论点分析
-
-Ken Shirriff 这篇文章的核心论点是：Intel 8087 浮点协处理器的指令解码系统远比表面看起来复杂，它是多层解码机制（PLA、微码条件跳转、硬连线电路等）的叠加结果。作者通过逆向工程视角，揭示了这种复杂性并非设计失误，而是当时技术约束下的必要妥协——芯片面积极其珍贵，每减少几个晶体管都值得采用特殊技巧。
-
-作者进一步指出，这种"临时拼凑"（ad hoc）的架构最终成功奠定了现代浮点标准（IEEE 754）的基础，尽管早期良品率低得惊人（每片晶圆仅两个可用芯片）。
-
-### 文章的优点
-
-1. **技术深度与可视化结合**：文章不仅有晶体管级别的电路分析，还配有大量显微镜照片和示意图，使抽象的硬件概念具象化。这种"考古式"技术写作风格独特且引人入胜。
-
-2. **历史语境的呈现**：作者将技术选择置于1980年代的制造约束中考量，让读者理解为什么工程师会接受如此复杂的解决方案。这种"技术史"视角避免了用现代标准简单否定过去设计的陷阱。
-
-3. **多层级解码逻辑的清晰梳理**：从 ModR/M 字节解析到微码入口点选择，再到硬连线指令处理，作者构建了一个层次分明的叙述结构，帮助读者理解不同解码机制的协作关系。
-
-### 文章的局限与值得商榷之处
-
-1. **对设计权衡的呈现不够全面**：文章强调了复杂度是为了节省芯片面积，但并未深入讨论这种选择带来的长期维护成本、验证难度和潜在可靠性问题。如果当时采用更简洁但稍大的设计，是否会加速 x87 浮点单元的普及？
-
-2. **缺少与其他架构的比较**：文章将 8087 的解码复杂性视为必然，但没有对比同时代的其他浮点实现（如 Motorola 68881）。这种比较可能揭示 Intel 的设计是行业惯例还是特定约束下的特例。
-
-3. **对"成功"的归因可能过于简化**：作者认为 8087 的成功在于其浮点标准被广泛采纳，但忽略了市场因素（IBM PC 的统治地位、软件兼容性需求）对技术标准锁定的影响。技术上"不够好但足够早"的方案往往胜过技术上更优但晚到的竞争者。
-
-### 我的批判性视角
-
-从计算机体系结构演进的角度看，8087 的解码复杂性体现了 CISC（复杂指令集）设计哲学的一个关键张力：**硬件复杂度 vs 软件便利性**。8087 将大量复杂性推向硬件，使汇编程序员能使用丰富的浮点指令，但这种做法的代价是硬件实现变得难以理解和验证。
-
-值得注意的是，这种设计哲学在后来的 CPU 演进中被逐步抛弃。RISC 运动的核心主张正是将复杂性从硬件移回软件（编译器）。现代 x86 处理器虽然仍兼容 8087 指令集，但实际上通过内部解码将 CISC 指令转换为类似 RISC 的微操作（μops）执行。这暗示了 8087 的"临时电路"方法可能并非最优长期架构，而是特定历史条件下的权宜之计。
-
-### 技术启示与当代意义
-
-1. **技术债务的积累**：8087 的复杂解码机制成为 x86 架构的"技术债务"，至今仍需在现代处理器中维护兼容。这提醒我们：早期设计决策的约束会在技术栈中长期存在。
-
-2. **逆向工程的价值**：作者通过物理拆解和显微镜分析还原历史芯片的方法，展示了当官方文档缺失或不完整时，逆向工程对技术史研究的关键作用。
-
-3. **芯片面积与能效的权衡**：当时的优化目标（最小化晶体管数量）与当代芯片设计（在功耗约束下最大化性能）形成有趣对比。今天的设计师可能更愿意增加晶体管来简化控制逻辑，因为功耗而非面积成为主要约束。
-
-总之，这篇文章不仅是对一个历史芯片的技术分析，更是对一个关键问题的案例研究：**当技术可能性边界与设计理想冲突时，工程师如何在约束中创造可行的解决方案**——以及这些解决方案如何在几十年后继续塑造我们使用的技术。
+   指令解码 PLA 有 22 个条目，跳转表也有 22 个条目。这些值相同是巧合。跳转表 ROM 中的条目由微指令的五位选择。ROM 的结构是每行两个 11 位字，交错排列。（有 22 位也是巧合。）跳转编号的高四位选择 ROM 中的一行，而最低位选择两行中的一行。此实现为目标 0（三分支跳转）进行了修改。如果当前指令是乘法，则为目标 0 选择第一行 ROM，或为目标 1 选择。如果当前指令是加法或减法，则为目标 0 选择第二行，或为目标 2 选择。如果当前指令是除法，则为目标 0 选择第三行，或为目标 3 选择。因此，目标 0 最终选择第 1、2 或 3 行。然而，请记住，每行有两个字，由目标编号的低位选择。问题是目标 0 与乘法将访问第 1 行的左字，而目标 1 将访问第 1 行的右字，但两者都应提供相同的地址。解决方案是第 1、2 和 3 行在行中存储了两次相同的地址，因此这些行每个都"浪费"了一个值。

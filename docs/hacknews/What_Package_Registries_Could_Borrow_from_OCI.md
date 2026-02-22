@@ -1,4 +1,3 @@
-Title: What Package Registries Could Borrow from OCI (包管理器仓库可以向 OCI 借鉴什么)
 URL: https://nesbitt.io/2026/02/18/what-package-registries-could-borrow-from-oci.html
 
 Every package manager ships code as an archive, and every one of them has a slightly different way to do it.

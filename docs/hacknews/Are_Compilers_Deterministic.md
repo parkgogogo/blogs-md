@@ -1,4 +1,3 @@
-Title: Are Compilers Deterministic? / 编译器是确定性的吗？
 URL: https://blog.onepatchdown.net/2026/02/22/are-compilers-deterministic-nerd-version/
 
 Betteridge's law of headlines says "no," and for the ordinary developer experience, that's roughly correct. (And you're absolutely right! Here's an em-dash—so you know I had ChatGPT help me write this.)

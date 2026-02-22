@@ -1,6 +1,4 @@
-# SWE-bench February 2026 Leaderboard Update / SWE-bench 2026年2月排行榜更新
-
-**Original URL / 原文链接**: https://simonwillison.net/2026/Feb/19/swe-bench/
+URL: https://simonwillison.net/2026/Feb/19/swe-bench/
 
 **Tags / 标签**: `SWE-bench`, `AI Benchmark`, `Code Generation`, `LLM`, `Claude`, `GPT`, `Gemini`, `DeepSeek`
 

@@ -1,5 +1,3 @@
-# How Generative and Agentic AI Shift Concern from Technical Debt to Cognitive Debt
-
 **原文链接 / Original URL**: https://simonwillison.net/2026/Feb/15/cognitive-debt/
 
 ---

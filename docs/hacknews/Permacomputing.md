@@ -1,5 +1,3 @@
-# 永久计算 / Permacomputing
-
 URL: https://wiki.xxiivv.com/site/permacomputing.html
 
 ## A holistic approach to computing inspired from permaculture.

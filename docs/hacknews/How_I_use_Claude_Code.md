@@ -1,4 +1,3 @@
-Title: 我如何使用 Claude Code
 URL: https://boristane.com/blog/how-i-use-claude-code/
 
 ---

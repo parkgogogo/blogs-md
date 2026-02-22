@@ -1,6 +1,4 @@
-# 当复杂度增长时，架构胜过材料 / As Complexity Grows, Architecture Beats Materials
-
-**原文链接 / Original URL**: https://worksonmymachine.ai/p/as-complexity-grows-architecture
+URL: https://worksonmymachine.ai/p/as-complexity-grows-architecture
 
 ---
 

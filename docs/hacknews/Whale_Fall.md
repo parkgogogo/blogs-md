@@ -1,7 +1,5 @@
 URL: https://nesbitt.io/2026/02/21/whale-fall.html
 
-Title: Whale Fall | 鲸落
-
 ---
 
 When a whale dies in the open ocean, its body sinks to the abyssal seafloor and becomes an ecosystem. 
@@ -222,7 +220,6 @@ Oracle's acquisition of Sun in 2010 was less a single whale fall than a pod of w
 
 Java, Solaris, ZFS, DTrace, VirtualBox, NetBeans, GlassFish, Hudson, MySQL—each sank to a different seafloor and triggered its own succession. 
 Java、Solaris、ZFS、DTrace、VirtualBox、NetBeans、GlassFish、Hudson、MySQL，每一个都沉到了不同的海底，各自引发了演替。
-
 Some produced single dominant forks (Hudson to Jenkins, ZFS to OpenZFS), some fragmented into competing lineages (MySQL alone fed MariaDB, Percona, and briefly Drizzle, which itself became a smaller whale fall after it was abandoned), and some wandered between foundations before stabilizing (NetBeans to Apache, GlassFish to Payara and the broader Jakarta EE ecosystem). 
 
 有的产生了单一的统治性 fork（Hudson 到 Jenkins，ZFS 到 OpenZFS），有的分散成相互竞争的谱系（仅 MySQL 就滋养了 MariaDB、Percona，以及短暂的 Drizzle，而 Drizzle 本身在被遗弃后成为了一个更小的鲸落），还有的在基金会之间辗转后才稳定下来（NetBeans 到 Apache，GlassFish 到 Payara 以及更广泛的 Jakarta EE 生态系统）。
