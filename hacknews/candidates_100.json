@@ -1,0 +1,602 @@
+[
+  {
+    "id": "2680",
+    "title": "Portable monitors are good",
+    "url": "https://xeiaso.net/blog/2026/portable-monitors-are-good/",
+    "published": "2026-02-24"
+  },
+  {
+    "id": "2678",
+    "title": "Weekly Update 492",
+    "url": "https://www.troyhunt.com/weekly-update-492/",
+    "published": "2026-02-24"
+  },
+  {
+    "id": "2677",
+    "title": "Book Review: A Geography of Time by Robert V. Levine ★★★☆☆",
+    "url": "https://shkspr.mobi/blog/2026/02/book-review-a-geography-of-time-by-robert-v-levine/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2676",
+    "title": "Pluralistic: Deplatform yourself (23 Feb 2026)",
+    "url": "https://pluralistic.net/2026/02/23/goodharts-lawbreaker/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2669",
+    "title": "Ladybird adopts Rust, with help from AI",
+    "url": "https://simonwillison.net/2026/Feb/23/ladybird-adopts-rust/#atom-everything",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2670",
+    "title": "Writing about Agentic Engineering Patterns",
+    "url": "https://simonwillison.net/2026/Feb/23/agentic-engineering-patterns/#atom-everything",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2671",
+    "title": "Writing code is cheap now",
+    "url": "https://simonwillison.net/guides/agentic-engineering-patterns/code-is-cheap/#atom-everything",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2672",
+    "title": "Quoting Paul Ford",
+    "url": "https://simonwillison.net/2026/Feb/23/paul-ford/#atom-everything",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2673",
+    "title": "Reply guy",
+    "url": "https://simonwillison.net/2026/Feb/23/reply-guy/#atom-everything",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2674",
+    "title": "Quoting Summer Yue",
+    "url": "https://simonwillison.net/2026/Feb/23/summer-yue/#atom-everything",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2675",
+    "title": "Red/green TDD",
+    "url": "https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/#atom-everything",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2667",
+    "title": "Insider amnesia",
+    "url": "https://seangoedecke.com/insider-amnesia/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2668",
+    "title": "What's so hard about continuous learning?",
+    "url": "https://seangoedecke.com/continuous-learning/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2666",
+    "title": "Where Do Specifications Fit in the Dependency Tree?",
+    "url": "https://nesbitt.io/2026/02/23/where-do-specifications-fit-in-the-dependency-tree.html",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2664",
+    "title": "Thoughts on Farcaster",
+    "url": "https://www.joanwestenberg.com/thoughts-on-farcaster/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2665",
+    "title": "Everyone in AI is building the wrong thing for the same reason",
+    "url": "https://www.joanwestenberg.com/everyone-in-ai-is-building-the-wrong-thing-for-the-same-reason/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2663",
+    "title": "The Little Red Dot",
+    "url": "https://idiallo.com/blog/little-red-dot?src=feed",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2661",
+    "title": "Giant Steps",
+    "url": "https://www.johndcook.com/blog/2026/02/23/giant-steps/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2662",
+    "title": "Tritone substitution",
+    "url": "https://www.johndcook.com/blog/2026/02/23/tritone-sub/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2660",
+    "title": "letterboxd2jellyfin sync script",
+    "url": "https://jayd.ml/2026/02/14/letterboxd2jellyfin.html",
+    "published": "2026-02-14"
+  },
+  {
+    "id": "2659",
+    "title": "Pockets of Humanity",
+    "url": "https://herman.bearblog.dev/pockets-of-humanity/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2658",
+    "title": "Turns out Generative AI was a scam",
+    "url": "https://garymarcus.substack.com/p/turns-out-generative-ai-was-a-scam",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2657",
+    "title": "History of Dell computers",
+    "url": "https://dfarq.homeip.net/history-of-dell-computers/?utm_source=rss&utm_medium=rss&utm_campaign=history-of-dell-computers",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2656",
+    "title": "New Blog Post: Some Silly Z3 Scripts I Wrote",
+    "url": "https://buttondown.com/hillelwayne/archive/new-blog-post-some-silly-z3-scripts-i-wrote/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2652",
+    "title": "The Pants-Shitting Saga of Resizing Windows on MacOS 26 Tahoe Continues",
+    "url": "https://noheger.at/blog/2026/02/12/resizing-windows-on-macos-tahoe-the-saga-continues/",
+    "published": "2026-02-24"
+  },
+  {
+    "id": "2653",
+    "title": "NetNewsWire 7 for Mac",
+    "url": "https://netnewswire.blog/2026/01/27/netnewswire-for-mac.html",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2654",
+    "title": "Trader Joe's Dark Chocolate Peanut Butter Cups",
+    "url": "https://www.traderjoes.com/home/products/pdp/dark-chocolate-peanut-butter-cups-094064",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2655",
+    "title": "Grandson of Inventor of Reese's Peanut Butter Cups Goes Public With the Obvious: They Taste Like Shit Now",
+    "url": "https://apnews.com/article/reeses-peanut-butter-cups-hershey-chocolate-1a66ec75247fd146888b7a747a740cd3",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2651",
+    "title": "Customizing the ways the dialog manager dismisses itself: Detecting the ESC key, second (failed) attempt",
+    "url": "https://devblogs.microsoft.com/oldnewthing/20260223-00/?p=112080",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2621",
+    "title": "FreeBSD doesn't have Wi-Fi driver for my old MacBook. AI build one for me",
+    "url": "https://vladimir.varank.in/notes/2026/02/freebsd-brcmfmac/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2622",
+    "title": "UNIX99, a UNIX-like OS for the TI-99/4A",
+    "url": "https://forums.atariage.com/topic/380883-unix99-a-unix-like-os-for-the-ti-994a/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2623",
+    "title": "The Age Verification Trap: Verifying age undermines everyone's data protection",
+    "url": "https://spectrum.ieee.org/age-verification",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2624",
+    "title": "AI Added 'Basically Zero' to US Economic Growth Last Year, Goldman Sachs Says",
+    "url": "https://gizmodo.com/ai-added-basically-zero-to-us-economic-growth-last-year-goldman-sachs-says-2000725380",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2625",
+    "title": "What is f(x) ≤ g(x) + O(1)? Inequalities With Asymptotics",
+    "url": "https://jamesoswald.dev/posts/bigoinequality/",
+    "published": "2026-02-20"
+  },
+  {
+    "id": "2626",
+    "title": "Ladybird adopts Rust",
+    "url": "https://ladybird.org/posts/adopting-rust/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2627",
+    "title": "Show HN: PgDog – Scale Postgres without changing the app",
+    "url": "https://github.com/pgdogdev/pgdog",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2628",
+    "title": "Show HN: Babyshark – Wireshark made easy (terminal UI for PCAPs)",
+    "url": "https://github.com/vignesh07/babyshark",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2629",
+    "title": "The challenges of porting Shufflepuck Cafe to the 8 bits Apple II",
+    "url": "https://www.colino.net/wordpress/archives/2026/02/23/the-challenges-of-porting-shufflepuck-cafe-to-the-8-bits-apple-ii/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2630",
+    "title": "Elsevier shuts down its finance journal citation cartel",
+    "url": "https://www.chrisbrunet.com/p/elsevier-shuts-down-its-finance-journal",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2631",
+    "title": "Making Wolfram Tech Available as a Foundation Tool for LLM Systems",
+    "url": "https://writings.stephenwolfram.com/2026/02/making-wolfram-tech-available-as-a-foundation-tool-for-llm-systems/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2632",
+    "title": "Magical Mushroom – Europe's first industrial-scale mycelium packaging producer",
+    "url": "https://magicalmushroom.com/index",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2633",
+    "title": "'Viking' was a job description, not a matter of heredity: Ancient DNA study",
+    "url": "https://www.science.org/content/article/viking-was-job-description-not-matter-heredity-massive-ancient-dna-study-shows",
+    "published": "2026-02-21"
+  },
+  {
+    "id": "2634",
+    "title": "SIM (YC X25) Is Hiring the Best Engineers in San Francisco",
+    "url": "https://www.ycombinator.com/companies/sim/jobs/Rj8TVRM-software-engineer-platform",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2635",
+    "title": "Show HN: Sowbot – open-hardware agricultural robot (ROS2, RTK GPS)",
+    "url": "https://sowbot.co.uk/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2636",
+    "title": "A simple web we own",
+    "url": "https://rsdoiel.github.io/blog/2026/02/21/a_simple_web_we_own.html",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2637",
+    "title": "The Rise of Eyes Began with Just One",
+    "url": "https://www.nytimes.com/2026/02/23/science/evolution-vertebrate-eye.html",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2638",
+    "title": "You are not supposed to install OpenClaw on your personal computer",
+    "url": "https://twitter.com/i/status/2025987544853188836",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2639",
+    "title": "ASML unveils EUV light source advance that could yield 50% more chips by 2030",
+    "url": "https://www.reuters.com/world/china/asml-unveils-euv-light-source-advance-that-could-yield-50-more-chips-by-2030-2026-02-23/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2640",
+    "title": "Binance fired employees who found $1.7B in crypto was sent to Iran",
+    "url": "https://www.nytimes.com/2026/02/23/technology/binance-employees-iran-firings.html",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2641",
+    "title": "Scent, in Silico",
+    "url": "https://www.asimov.press/p/scent",
+    "published": "2026-02-19"
+  },
+  {
+    "id": "2642",
+    "title": "Psychology suggests making a shopping list is a sign of sharper thinking",
+    "url": "https://economictimes.indiatimes.com/news/international/us/still-making-a-shopping-list-psychology-suggests-its-a-sign-of-sharper-thinking/articleshow/127796018.cms?from=mdr",
+    "published": "2026-02-24"
+  },
+  {
+    "id": "2643",
+    "title": "Benchmarks for concurrent hash map implementations in Go",
+    "url": "https://github.com/puzpuzpuz/go-concurrent-map-bench",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2644",
+    "title": "Generalized Sequential Probability Ratio Test for Families of Hypotheses [pdf]",
+    "url": "https://sites.stat.columbia.edu/jcliu/paper/GSPRT_SQA3.pdf",
+    "published": "2026-02-20"
+  },
+  {
+    "id": "2645",
+    "title": "I discovered a hidden tragedy tied to Russia's most famous painting",
+    "url": "https://www.theguardian.com/artanddesign/2026/feb/20/an-unknown-woman-how-i-discovered-a-hidden-tragedy-tied-to-russias-most-famous-painting",
+    "published": "2026-02-20"
+  },
+  {
+    "id": "2646",
+    "title": "Americans are destroying Flock surveillance cameras",
+    "url": "https://techcrunch.com/2026/02/23/americans-are-destroying-flock-surveillance-cameras/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2647",
+    "title": "femtolisp: A lightweight, robust, scheme-like Lisp implementation",
+    "url": "https://github.com/JeffBezanson/femtolisp",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2648",
+    "title": "Show HN: AI Timeline – 171 LLMs from Transformer (2017) to GPT-5.3 (2026)",
+    "url": "https://llm-timeline.com/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2649",
+    "title": "The peculiar case of Japanese web design (2022)",
+    "url": "https://sabrinas.space",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2650",
+    "title": "Emulating Goto in Scheme with Continuations",
+    "url": "https://terezi.pyrope.net/ccgoto/",
+    "published": "2026-02-19"
+  },
+  {
+    "id": "2619",
+    "title": "Making Icon Sets Easy With Web Origami",
+    "url": "https://blog.jim-nielsen.com/2026/origami-icons/",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2620",
+    "title": "How AI Labs Proliferate",
+    "url": "https://blog.jim-nielsen.com/2026/how-ai-labs-proliferate/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2618",
+    "title": "Taking action against AI harms",
+    "url": "https://anildash.com/2026/02/23/taking-action-ai-harms/",
+    "published": "2026-02-24"
+  },
+  {
+    "id": "2617",
+    "title": "The Great Zipper of Capitalism",
+    "url": "https://worksonmymachine.ai/p/the-great-zipper-of-capitalism",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2616",
+    "title": "Nerd Quiz #4",
+    "url": "https://susam.net/code/news/nq/4.0.0.html",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2612",
+    "title": "The Claude C Compiler: What It Reveals About the Future of Software",
+    "url": "https://simonwillison.net/2026/Feb/22/ccc/#atom-everything",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2613",
+    "title": "London Stock Exchange: Raspberry Pi Holdings plc",
+    "url": "https://simonwillison.net/2026/Feb/22/raspberry-pi-openclaw/#atom-everything",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2614",
+    "title": "How I think about Codex",
+    "url": "https://simonwillison.net/2026/Feb/22/how-i-think-about-codex/#atom-everything",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2611",
+    "title": "Forge-Specific Repository Folders",
+    "url": "https://nesbitt.io/2026/02/22/forge-specific-repository-folders.html",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2610",
+    "title": "Which web frameworks are most token-efficient for AI agents?",
+    "url": "https://martinalderson.com/posts/which-web-frameworks-are-most-token-efficient-for-ai-agents/?utm_source=rss",
+    "published": "2026-02-23"
+  },
+  {
+    "id": "2607",
+    "title": "Bitcoin mining difficulty",
+    "url": "https://www.johndcook.com/blog/2026/02/22/bitcoin-mining-difficulty/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2608",
+    "title": "Exahash, Zettahash, Yottahash",
+    "url": "https://www.johndcook.com/blog/2026/02/22/zettahash/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2609",
+    "title": "10,000,000th Fibonacci number",
+    "url": "https://www.johndcook.com/blog/2026/02/21/f10000000/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2606",
+    "title": "The Orality Theory of Everything",
+    "url": "https://www.theatlantic.com/ideas/2026/02/social-media-literacy-crisis/686076/?utm_source=feed",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2578",
+    "title": "I built Timeframe, our family e-paper dashboard",
+    "url": "https://hawksley.org/2026/02/17/timeframe.html",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2579",
+    "title": "Google restricting Google AI Pro/Ultra subscribers for using OpenClaw",
+    "url": "https://discuss.ai.google.dev/t/account-restricted-without-warning-google-ai-ultra-oauth-via-openclaw/122778",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2580",
+    "title": "Loops is a federated, open-source TikTok",
+    "url": "https://joinloops.org/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2581",
+    "title": "Show HN: CIA World Factbook Archive (1990–2025), searchable and exportable",
+    "url": "https://cia-factbook-archive.fly.dev/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2582",
+    "title": "Using the new bridges of FreeBSD 15",
+    "url": "https://blog.feld.me/posts/2026/02/using-new-bridges-freebsd-15/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2583",
+    "title": "Keybee: A Keyboard Designed for Smartphones",
+    "url": "https://keybeekeyboard.com/",
+    "published": "2026-02-19"
+  },
+  {
+    "id": "2584",
+    "title": "Six Math Essentials",
+    "url": "https://terrytao.wordpress.com/2026/02/16/six-math-essentials/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2585",
+    "title": "Show HN: Local-First Linux MicroVMs for macOS",
+    "url": "https://shuru.run",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2586",
+    "title": "Show HN: A geometric analysis of Chopin's Prelude No. 4 using 3D topology",
+    "url": "https://github.com/jimishol/cholidean-harmony-structure/blob/main/docs/03-case-study-chopin-prelude04.md",
+    "published": "2026-02-20"
+  },
+  {
+    "id": "2587",
+    "title": "Fix your tools",
+    "url": "https://ochagavia.nl/blog/fix-your-tools/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2588",
+    "title": "Man accidentally gains control of 7k robot vacuums",
+    "url": "https://www.popsci.com/technology/robot-vacuum-army/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2589",
+    "title": "Linuxulator on FreeBSD Feels Like Magic",
+    "url": "https://hayzam.com/blog/02-linuxulator-is-awesome/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2590",
+    "title": "Hello Worg, the Org-Mode Community",
+    "url": "https://orgmode.org/worg/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2592",
+    "title": "Fresh File Explorer – VS Code extension for navigating recent work",
+    "url": "https://github.com/FreHu/vscode-fresh-file-explorer",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2593",
+    "title": "Emulated Windows 3.11 in the Browser",
+    "url": "https://pieter.com/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2594",
+    "title": "Music Discovery",
+    "url": "https://www.secondtrack.co/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2595",
+    "title": "NanoClaw moved from Apple Containers to Docker",
+    "url": "https://twitter.com/Gavriel_Cohen/status/2025603982769410356",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2596",
+    "title": "The Tears of Donald Knuth",
+    "url": "https://cacm.acm.org/opinion/the-tears-of-donald-knuth/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2597",
+    "title": "Xweather Live – Interactive global vector weather map",
+    "url": "https://live.xweather.com/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2598",
+    "title": "Show HN: Warn Firehose – Every US layoff notice in one searchable database",
+    "url": "https://warnfirehose.com",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2599",
+    "title": "Spain has blocked access to freedom.gov",
+    "url": "https://twitter.com/Pirat_Nation/status/2025643188321714642",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2600",
+    "title": "Algolia Hacker News Search GitHub Project Archived",
+    "url": "https://github.com/algolia/hn-search",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2601",
+    "title": "Show HN: 3D Mahjong, Built in CSS",
+    "url": "https://voxjong.com",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2602",
+    "title": "Black-White Array: fast, ordered and based on with O(log N) memory allocations",
+    "url": "https://github.com/dronnix/bwarr",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2603",
+    "title": "The Geometry of Tostitos Scoops",
+    "url": "https://chip-tech-rob.zocomputer.io/",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2604",
+    "title": "Back to FreeBSD: Part 1",
+    "url": "https://hypha.pub/back-to-freebsd-part-1",
+    "published": "2026-02-22"
+  },
+  {
+    "id": "2605",
+    "title": "In World Without BlackBerry, Physical Keyboards on Phones Are Making a Comeback",
+    "url": "https://www.cnet.com/tech/mobile/in-a-world-without-blackberry-physical-keyboards-on-phones-are-making-a-comeback/",
+    "published": "2026-02-22"
+  }
+]

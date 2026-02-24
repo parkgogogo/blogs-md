@@ -1,4 +1,12 @@
 [
+  {"url": "https://simonwillison.net/guides/agentic-engineering-patterns/code-is-cheap/", "date": "2026-02-24", "title": "Writing code is cheap now - Agentic Engineering Patterns"},
+  {"url": "https://vladimir.varank.in/notes/2026/02/freebsd-brcmfmac/", "date": "2026-02-24", "title": "FreeBSD doesn't have Wi-Fi driver for my old MacBook. AI build one for me"},
+  {"url": "https://seangoedecke.com/continuous-learning/", "date": "2026-02-24", "title": "What's so hard about continuous learning?"},
+  {"url": "https://devblogs.microsoft.com/oldnewthing/20260223-00/?p=112080", "date": "2026-02-24", "title": "Customizing the ways the dialog manager dismisses itself"},
+  {"url": "https://nesbitt.io/2026/02/23/where-do-specifications-fit-in-the-dependency-tree.html", "date": "2026-02-24", "title": "Where Do Specifications Fit in the Dependency Tree?"},
+  {"url": "https://buttondown.com/hillelwayne/archive/new-blog-post-some-silly-z3-scripts-i-wrote/", "date": "2026-02-24", "title": "Some Silly Z3 Scripts I Wrote"},
+  {"url": "https://simonwillison.net/2026/Feb/23/ladybird-adopts-rust/", "date": "2026-02-24", "title": "Ladybird adopts Rust, with help from AI"},
+  {"url": "https://martinalderson.com/posts/which-web-frameworks-are-most-token-efficient-for-ai-agents/", "date": "2026-02-24", "title": "Which web frameworks are most token-efficient for AI agents?"},
   {"url": "https://www.wheresyoured.at/data-center-crisis/", "date": "2026-02-21", "title": "AI Data Center Financial Crisis"},
   {"url": "https://shkspr.mobi/blog/2026/02/ai-is-a-nand-maximiser/", "date": "2026-02-21", "title": "AI is a NAND Maximiser"},
   {"url": "https://blog.onepatchdown.net/2026/02/22/are-compilers-deterministic-nerd-version/", "date": "2026-02-23", "title": "Are Compilers Deterministic"},
