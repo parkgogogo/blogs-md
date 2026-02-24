@@ -1,4 +1,6 @@
 [
+  {"url": "https://github.com/puzpuzpuz/go-concurrent-map-bench", "date": "2026-02-24", "title": "go-concurrent-map-bench: Benchmarks for concurrent hash map implementations in Go"},
+  {"url": "https://www.asimov.press/p/scent", "date": "2026-02-24", "title": "Scent, In Silico"},
   {"url": "https://simonwillison.net/guides/agentic-engineering-patterns/code-is-cheap/", "date": "2026-02-24", "title": "Writing code is cheap now - Agentic Engineering Patterns"},
   {"url": "https://vladimir.varank.in/notes/2026/02/freebsd-brcmfmac/", "date": "2026-02-24", "title": "FreeBSD doesn't have Wi-Fi driver for my old MacBook. AI build one for me"},
   {"url": "https://seangoedecke.com/continuous-learning/", "date": "2026-02-24", "title": "What's so hard about continuous learning?"},
@@ -25,7 +27,6 @@
   {"url": "https://steve-yegge.medium.com/the-ai-vampire-eda6e4f07163", "date": "2026-02-21", "title": "The AI Vampire"},
   {"url": "https://nesbitt.io/2026/02/21/whale-fall.html", "date": "2026-02-21", "title": "Whale Fall"},
   {"url": "https://nesbitt.io/2026/02/18/what-package-registries-could-borrow-from-oci.html", "date": "2026-02-21", "title": "What Package Registries Could Borrow from OCI"},
-  {"url": "https://martinalderson.com/posts/which-web-frameworks-are-most-token-efficient-for-ai-agents/", "date": "2026-02-23", "title": "Which web frameworks are most token-efficient"},
   {"url": "https://www.dbreunig.com/2026/02/21/why-is-claude-an-electron-app.html", "date": "2026-02-23", "title": "Why is Claude an Electron App"},
   {"url": "https://simonwillison.net/2026/Feb/15/cognitive-debt/", "date": "2026-02-21", "title": "Cognitive Debt"}
 ]
