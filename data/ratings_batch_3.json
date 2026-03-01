@@ -1,0 +1,45 @@
+[{
+  "title_en": "Woxi: Wolfram Mathematica Reimplementation in Rust",
+  "title_cn": "Woxi：用 Rust 重新实现 Wolfram Mathematica",
+  "url": "https://github.com/ad-si/Woxi",
+  "summary_en": "Woxi is an interpreter for the Wolfram Language powered by Rust, focusing on implementing a subset of Mathematica for CLI scripting and notebooks. It aims to provide a Rust-based alternative to the proprietary Wolfram system with an emphasis on performance and open-source accessibility.",
+  "summary_cn": "Woxi 是一个基于 Rust 的 Wolfram 语言解释器，致力于实现 Mathematica 的子集以支持 CLI 脚本和笔记本功能。它为开发者提供了一个开源、高性能的替代方案，摆脱了对专有 Wolfram 系统的依赖。",
+  "category": "Dev",
+  "rating": 7
+},
+{
+  "title_en": "Deterministic Programming with LLMs",
+  "title_cn": "使用 LLM 进行确定性编程",
+  "url": "https://www.mcherm.com/deterministic-programming-with-llms.html",
+  "summary_en": "This article explores the challenge of achieving deterministic outputs when using LLMs for coding. Unlike humans who consistently follow patterns, LLMs can produce inconsistent results even with temperature set to zero. The author advocates for using lints, tests, and guardrails to ensure code quality and consistency when working with AI coding agents.",
+  "summary_cn": "本文探讨了在使用 LLM 进行编程时实现确定性输出的挑战。与人类能够持续遵循模式不同，即使温度参数设为零，LLM 也可能产生不一致的结果。作者主张使用代码检查、测试和护栏机制来确保 AI 编程助手生成代码的质量和一致性。",
+  "category": "AI",
+  "rating": 8
+},
+{
+  "title_en": "Qwen3.5 122B and 35B models offer Sonnet 4.5 performance on local computers",
+  "title_cn": "Qwen3.5 122B 和 35B 模型在本地电脑上提供 Sonnet 4.5 级别性能",
+  "url": "https://venturebeat.com/technology/alibabas-new-open-source-qwen3-5-medium-models-offer-sonnet-4-5-performance",
+  "summary_en": "Alibaba's new open-source Qwen3.5-Medium series delivers competitive performance rivaling Claude Sonnet 4.5 at a fraction of the cost. The 35B-A3B model notably surpasses larger predecessors like Qwen3-235B in knowledge and visual reasoning benchmarks, demonstrating that improved architecture and data quality matter more than raw model size.",
+  "summary_cn": "阿里巴巴新开源的 Qwen3.5-Medium 系列以极低的成本提供了与 Claude Sonnet 4.5 相当的性能。35B-A3B 模型在知识和视觉推理基准测试中甚至超越了更大的前代模型 Qwen3-235B，证明了改进的架构和数据质量比原始模型规模更重要。",
+  "category": "AI",
+  "rating": 9
+},
+{
+  "title_en": "Building a Minimal Transformer for 10-digit Addition",
+  "title_cn": "构建用于十位数加法的极简 Transformer",
+  "url": "https://alexlitzenberger.com/blog/post.html?post=/building_a_minimal_transformer_for_10_digit_addition",
+  "summary_en": "This technical deep-dive explores the challenge of building the smallest possible transformer model capable of adding two 10-digit numbers with over 99% accuracy. The project demonstrates fundamental transformer mechanics and optimization techniques, offering valuable insights for understanding how neural networks handle arithmetic operations at a minimal scale.",
+  "summary_cn": "这项技术性深入研究探讨了构建能够用超过 99% 准确率相加两个十位数字的最小 Transformer 模型的挑战。该项目展示了基础 Transformer 机制和优化技术，为理解神经网络如何以最小规模处理算术运算提供了宝贵见解。",
+  "category": "AI",
+  "rating": 8
+},
+{
+  "title_en": "New evidence that Cantor plagiarized Dedekind?",
+  "title_cn": "康托尔抄袭戴德金的新证据？",
+  "url": "https://www.quantamagazine.org/the-man-who-stole-infinity-20260225/",
+  "summary_en": "A historical investigation reveals newly discovered letters suggesting Georg Cantor may have plagiarized key mathematical proofs about infinity from his colleague Richard Dedekind. The article discusses how Dedekind's 1873 letter containing proofs about algebraic numbers went missing for over a century, raising questions about the origins of Cantor's famous work on set theory.",
+  "summary_cn": "一项历史调查揭示了新发现的信件，表明乔治·康托尔可能从他的同事理查德·戴德金那里抄袭了关于无穷的关键数学证明。文章讨论了戴德金 1873 年包含关于代数数证明的信件如何失踪了一个多世纪，引发了关于康托尔著名集合论工作起源的质疑。",
+  "category": "Other",
+  "rating": 4
+}]

@@ -1,0 +1,110 @@
+[
+  {
+    "title_en": "The Windows 95 user interface: A case study in usability engineering (1996)",
+    "title_cn": "Windows 95\u7528\u6237\u754c\u9762\uff1a\u53ef\u7528\u6027\u5de5\u7a0b\u6848\u4f8b\u7814\u7a76\uff081996\uff09",
+    "url": "https://dl.acm.org/doi/fullHtml/10.1145/238386.238611",
+    "summary_en": "This classic ACM paper documents the usability engineering practices behind Windows 95's interface design. It covers systematic user testing, issue tracking, and iterative refinement that established principles still relevant to modern UI/UX development.",
+    "summary_cn": "\u8fd9\u7bc7\u7ecf\u5178ACM\u8bba\u6587\u8bb0\u5f55\u4e86Windows 95\u754c\u9762\u8bbe\u8ba1\u80cc\u540e\u7684\u53ef\u7528\u6027\u5de5\u7a0b\u5b9e\u8df5\u3002\u6db5\u76d6\u7cfb\u7edf\u5316\u7528\u6237\u6d4b\u8bd5\u3001\u95ee\u9898\u8ffd\u8e2a\u548c\u8fed\u4ee3\u4f18\u5316\u6d41\u7a0b\uff0c\u8fd9\u4e9b\u539f\u5219\u81f3\u4eca\u5bf9\u73b0\u4ee3UI/UX\u5f00\u53d1\u4ecd\u5177\u6709\u91cd\u8981\u53c2\u8003\u4ef7\u503c\u3002",
+    "category": "Frontend",
+    "rating": 9
+  },
+  {
+    "title_en": "Verified Spec-Driven Development (VSDD)",
+    "title_cn": "\u9a8c\u8bc1\u5f0f\u89c4\u8303\u9a71\u52a8\u5f00\u53d1(VSDD)",
+    "url": "https://gist.github.com/dollspace-gay/d8d3bc3ecf4188df049d7a4726bb2a00",
+    "summary_en": "A software engineering methodology that combines three proven paradigms into an AI-orchestrated pipeline. VSDD proposes a structured approach where AI agents help bridge specifications and implementation through verification-driven workflows, potentially transforming how developers write and validate code.",
+    "summary_cn": "\u4e00\u79cd\u5c06\u4e09\u79cd\u6210\u719f\u8303\u5f0f\u878d\u5408\u4e3aAI\u7f16\u6392\u6d41\u6c34\u7ebf\u7684\u8f6f\u4ef6\u5de5\u7a0b\u65b9\u6cd5\u8bba\u3002VSDD\u63d0\u51fa\u4e86\u4e00\u79cd\u7ed3\u6784\u5316\u65b9\u6cd5\uff0c\u8ba9AI\u4ee3\u7406\u5e2e\u52a9\u5f25\u5408\u89c4\u8303\u4e0e\u5b9e\u73b0\u4e4b\u95f4\u7684\u5dee\u8ddd\uff0c\u901a\u8fc7\u9a8c\u8bc1\u9a71\u52a8\u7684\u5de5\u4f5c\u6d41\uff0c\u53ef\u80fd\u6539\u53d8\u5f00\u53d1\u8005\u7f16\u5199\u548c\u9a8c\u8bc1\u4ee3\u7801\u7684\u65b9\u5f0f\u3002",
+    "category": "AI",
+    "rating": 9
+  },
+  {
+    "title_en": "Qwen3.5 122B and 35B models offer Sonnet 4.5 performance on local computers",
+    "title_cn": "Qwen3.5 122B \u548c 35B \u6a21\u578b\u5728\u672c\u5730\u7535\u8111\u4e0a\u63d0\u4f9b Sonnet 4.5 \u7ea7\u522b\u6027\u80fd",
+    "url": "https://venturebeat.com/technology/alibabas-new-open-source-qwen3-5-medium-models-offer-sonnet-4-5-performance",
+    "summary_en": "Alibaba's new open-source Qwen3.5-Medium series delivers competitive performance rivaling Claude Sonnet 4.5 at a fraction of the cost. The 35B-A3B model notably surpasses larger predecessors like Qwen3-235B in knowledge and visual reasoning benchmarks, demonstrating that improved architecture and data quality matter more than raw model size.",
+    "summary_cn": "\u963f\u91cc\u5df4\u5df4\u65b0\u5f00\u6e90\u7684 Qwen3.5-Medium \u7cfb\u5217\u4ee5\u6781\u4f4e\u7684\u6210\u672c\u63d0\u4f9b\u4e86\u4e0e Claude Sonnet 4.5 \u76f8\u5f53\u7684\u6027\u80fd\u300235B-A3B \u6a21\u578b\u5728\u77e5\u8bc6\u548c\u89c6\u89c9\u63a8\u7406\u57fa\u51c6\u6d4b\u8bd5\u4e2d\u751a\u81f3\u8d85\u8d8a\u4e86\u66f4\u5927\u7684\u524d\u4ee3\u6a21\u578b Qwen3-235B\uff0c\u8bc1\u660e\u4e86\u6539\u8fdb\u7684\u67b6\u6784\u548c\u6570\u636e\u8d28\u91cf\u6bd4\u539f\u59cb\u6a21\u578b\u89c4\u6a21\u66f4\u91cd\u8981\u3002",
+    "category": "AI",
+    "rating": 9
+  },
+  {
+    "title_en": "Show HN: Now I Get It \u2013 Translate scientific papers into interactive webpages",
+    "title_cn": "Show HN: Now I Get It - \u5c06\u79d1\u5b66\u8bba\u6587\u8f6c\u5316\u4e3a\u4ea4\u4e92\u5f0f\u7f51\u9875",
+    "url": "https://nowigetit.us",
+    "summary_en": "A tool that converts scientific PDFs into shareable, interactive web pages that explain complex research in plain language. This bridges AI-powered content understanding with modern frontend development to make academic research more accessible.",
+    "summary_cn": "\u4e00\u6b3e\u5c06\u79d1\u5b66PDF\u8f6c\u6362\u4e3a\u53ef\u5206\u4eab\u7684\u4ea4\u4e92\u5f0f\u7f51\u9875\u7684\u5de5\u5177\uff0c\u7528\u901a\u4fd7\u8bed\u8a00\u89e3\u91ca\u590d\u6742\u7814\u7a76\u5185\u5bb9\u3002\u5b83\u7ed3\u5408\u4e86AI\u9a71\u52a8\u7684\u5185\u5bb9\u7406\u89e3\u548c\u73b0\u4ee3\u524d\u7aef\u5f00\u53d1\u6280\u672f\uff0c\u4f7f\u5b66\u672f\u7814\u7a76\u66f4\u6613\u7406\u89e3\u3002",
+    "category": "AI",
+    "rating": 9
+  },
+  {
+    "title_en": "From Noise to Image",
+    "title_cn": "\u4ece\u566a\u58f0\u5230\u56fe\u50cf",
+    "url": "https://lighthousesoftware.co.uk/projects/from-noise-to-image/",
+    "summary_en": "An exceptional interactive visual guide explaining how diffusion models generate images from text. The article demystifies latent space, embeddings, random seeds, guidance scales, and the denoising process through hands-on interactive demonstrations. It's a masterclass in making complex AI concepts accessible without sacrificing technical depth.",
+    "summary_cn": "\u4e00\u4efd\u51fa\u8272\u7684\u4ea4\u4e92\u5f0f\u89c6\u89c9\u6307\u5357\uff0c\u89e3\u91ca\u6269\u6563\u6a21\u578b\u5982\u4f55\u4ece\u6587\u672c\u751f\u6210\u56fe\u50cf\u3002\u6587\u7ae0\u901a\u8fc7\u52a8\u624b\u4ea4\u4e92\u5f0f\u6f14\u793a\u63ed\u5f00\u4e86\u6f5c\u5728\u7a7a\u95f4\u3001\u5d4c\u5165\u3001\u968f\u673a\u79cd\u5b50\u3001\u5f15\u5bfc\u5c3a\u5ea6\u548c\u53bb\u566a\u8fc7\u7a0b\u7684\u795e\u79d8\u9762\u7eb1\u3002\u8fd9\u662f\u4e00\u5802\u5728\u4e0d\u727a\u7272\u6280\u672f\u6df1\u5ea6\u7684\u60c5\u51b5\u4e0b\u8ba9\u590d\u6742AI\u6982\u5ff5\u6613\u4e8e\u7406\u89e3\u7684\u7cbe\u54c1\u8bfe\u7a0b\u3002",
+    "category": "AI",
+    "rating": 9
+  },
+  {
+    "title_en": "Stop Burning Your Context Window \u2014 We Built Context Mode",
+    "title_cn": "\u505c\u6b62\u6d6a\u8d39\u4f60\u7684\u4e0a\u4e0b\u6587\u7a97\u53e3\u2014\u2014\u6211\u4eec\u6784\u5efa\u4e86\u4e0a\u4e0b\u6587\u6a21\u5f0f",
+    "url": "https://mksg.lu/blog/context-mode",
+    "summary_en": "A deep dive into Context Mode, an MCP server that reduces Claude Code context consumption by 98%. The article explains the sandbox architecture with isolated subprocesses, SQLite FTS5 knowledge base with BM25 ranking, and practical implementation details. It demonstrates how proper tool design can extend AI coding sessions from 30 minutes to 3 hours.",
+    "summary_cn": "\u6df1\u5165\u63a2\u8ba8Context Mode\uff0c\u4e00\u4e2a\u5c06Claude Code\u4e0a\u4e0b\u6587\u6d88\u8017\u51cf\u5c1198%\u7684MCP\u670d\u52a1\u5668\u3002\u6587\u7ae0\u89e3\u91ca\u4e86\u5177\u6709\u9694\u79bb\u5b50\u8fdb\u7a0b\u7684\u6c99\u76d2\u67b6\u6784\u3001\u5e26\u6709BM25\u6392\u540d\u7684SQLite FTS5\u77e5\u8bc6\u5e93\uff0c\u4ee5\u53ca\u5b9e\u9645\u5b9e\u73b0\u7ec6\u8282\u3002\u5b83\u5c55\u793a\u4e86\u9002\u5f53\u7684\u5de5\u5177\u8bbe\u8ba1\u5982\u4f55\u5c06AI\u7f16\u7a0b\u4f1a\u8bdd\u4ece30\u5206\u949f\u5ef6\u957f\u52303\u5c0f\u65f6\u3002",
+    "category": "AI",
+    "rating": 9
+  },
+  {
+    "title_en": "Obsidian Sync now has a headless client",
+    "title_cn": "Obsidian Sync\u73b0\u5df2\u652f\u6301\u65e0\u5934\u5ba2\u6237\u7aef",
+    "url": "https://help.obsidian.md/sync/headless",
+    "summary_en": "Obsidian released an official headless CLI client for Obsidian Sync, enabling users to synchronize vaults from command line without the desktop app. This enables automation workflows, CI/CD integration, and server-side syncing for developers.",
+    "summary_cn": "Obsidian\u53d1\u5e03\u4e86Obsidian Sync\u7684\u5b98\u65b9\u65e0\u5934CLI\u5ba2\u6237\u7aef\uff0c\u7528\u6237\u65e0\u9700\u684c\u9762\u5e94\u7528\u5373\u53ef\u4ece\u547d\u4ee4\u884c\u540c\u6b65\u77e5\u8bc6\u5e93\u3002\u8fd9\u4e3a\u5f00\u53d1\u8005\u5b9e\u73b0\u4e86\u81ea\u52a8\u5316\u5de5\u4f5c\u6d41\u3001CI/CD\u96c6\u6210\u548c\u670d\u52a1\u5668\u7aef\u540c\u6b65\u529f\u80fd\u3002",
+    "category": "Dev",
+    "rating": 8
+  },
+  {
+    "title_en": "Addressing Antigravity Bans and Reinstating Access",
+    "title_cn": "\u5904\u7406Antigravity\u5c01\u7981\u53ca\u6062\u590d\u8bbf\u95ee",
+    "url": "https://github.com/google-gemini/gemini-cli/discussions/20632",
+    "summary_en": "Google's official response to mass bans affecting OpenClaw users on their Antigravity AI coding platform. Varun Mohan cited 'massive increase in malicious usage' degrading service quality. The post outlines an appeal process for automatic reinstatement and clarifies ToS violations related to third-party tool usage.",
+    "summary_cn": "Google\u5b98\u65b9\u56de\u5e94Antigravity\u5e73\u53f0\u5927\u89c4\u6a21\u5c01\u7981OpenClaw\u7528\u6237\u4e8b\u4ef6\u3002Varun Mohan\u8868\u793a\u68c0\u6d4b\u5230'\u6076\u610f\u4f7f\u7528\u6fc0\u589e'\u5bfc\u81f4\u670d\u52a1\u8d28\u91cf\u4e0b\u964d\u3002\u6587\u7ae0\u8bf4\u660e\u4e86\u7533\u8bc9\u81ea\u52a8\u6062\u590d\u6d41\u7a0b\uff0c\u5e76\u6f84\u6e05\u4e86\u4e0e\u7b2c\u4e09\u65b9\u5de5\u5177\u4f7f\u7528\u76f8\u5173\u7684\u670d\u52a1\u6761\u6b3e\u8fdd\u89c4\u95ee\u9898\u3002",
+    "category": "AI",
+    "rating": 8
+  },
+  {
+    "title_en": "Deterministic Programming with LLMs",
+    "title_cn": "\u4f7f\u7528 LLM \u8fdb\u884c\u786e\u5b9a\u6027\u7f16\u7a0b",
+    "url": "https://www.mcherm.com/deterministic-programming-with-llms.html",
+    "summary_en": "This article explores the challenge of achieving deterministic outputs when using LLMs for coding. Unlike humans who consistently follow patterns, LLMs can produce inconsistent results even with temperature set to zero. The author advocates for using lints, tests, and guardrails to ensure code quality and consistency when working with AI coding agents.",
+    "summary_cn": "\u672c\u6587\u63a2\u8ba8\u4e86\u5728\u4f7f\u7528 LLM \u8fdb\u884c\u7f16\u7a0b\u65f6\u5b9e\u73b0\u786e\u5b9a\u6027\u8f93\u51fa\u7684\u6311\u6218\u3002\u4e0e\u4eba\u7c7b\u80fd\u591f\u6301\u7eed\u9075\u5faa\u6a21\u5f0f\u4e0d\u540c\uff0c\u5373\u4f7f\u6e29\u5ea6\u53c2\u6570\u8bbe\u4e3a\u96f6\uff0cLLM \u4e5f\u53ef\u80fd\u4ea7\u751f\u4e0d\u4e00\u81f4\u7684\u7ed3\u679c\u3002\u4f5c\u8005\u4e3b\u5f20\u4f7f\u7528\u4ee3\u7801\u68c0\u67e5\u3001\u6d4b\u8bd5\u548c\u62a4\u680f\u673a\u5236\u6765\u786e\u4fdd AI \u7f16\u7a0b\u52a9\u624b\u751f\u6210\u4ee3\u7801\u7684\u8d28\u91cf\u548c\u4e00\u81f4\u6027\u3002",
+    "category": "AI",
+    "rating": 8
+  },
+  {
+    "title_en": "Building a Minimal Transformer for 10-digit Addition",
+    "title_cn": "\u6784\u5efa\u7528\u4e8e\u5341\u4f4d\u6570\u52a0\u6cd5\u7684\u6781\u7b80 Transformer",
+    "url": "https://alexlitzenberger.com/blog/post.html?post=/building_a_minimal_transformer_for_10_digit_addition",
+    "summary_en": "This technical deep-dive explores the challenge of building the smallest possible transformer model capable of adding two 10-digit numbers with over 99% accuracy. The project demonstrates fundamental transformer mechanics and optimization techniques, offering valuable insights for understanding how neural networks handle arithmetic operations at a minimal scale.",
+    "summary_cn": "\u8fd9\u9879\u6280\u672f\u6027\u6df1\u5165\u7814\u7a76\u63a2\u8ba8\u4e86\u6784\u5efa\u80fd\u591f\u7528\u8d85\u8fc7 99% \u51c6\u786e\u7387\u76f8\u52a0\u4e24\u4e2a\u5341\u4f4d\u6570\u5b57\u7684\u6700\u5c0f Transformer \u6a21\u578b\u7684\u6311\u6218\u3002\u8be5\u9879\u76ee\u5c55\u793a\u4e86\u57fa\u7840 Transformer \u673a\u5236\u548c\u4f18\u5316\u6280\u672f\uff0c\u4e3a\u7406\u89e3\u795e\u7ecf\u7f51\u7edc\u5982\u4f55\u4ee5\u6700\u5c0f\u89c4\u6a21\u5904\u7406\u7b97\u672f\u8fd0\u7b97\u63d0\u4f9b\u4e86\u5b9d\u8d35\u89c1\u89e3\u3002",
+    "category": "AI",
+    "rating": 8
+  },
+  {
+    "title_en": "The whole thing was a scam",
+    "title_cn": "\u6574\u4ef6\u4e8b\u90fd\u662f\u9a97\u5c40",
+    "url": "https://garymarcus.substack.com/p/the-whole-thing-was-scam",
+    "summary_en": "Gary Marcus alleges corruption in AI government contracts, claiming OpenAI's Sam Altman secretly worked on a Pentagon deal while publicly supporting Anthropic's Dario Amodei. The article suggests political donations influenced AI procurement decisions, raising concerns about cronyism in the emerging AI industry.",
+    "summary_cn": "Gary Marcus\u6307\u63a7AI\u653f\u5e9c\u5408\u540c\u5b58\u5728\u8150\u8d25\uff0c\u58f0\u79f0OpenAI\u7684Sam Altman\u5728\u516c\u5f00\u652f\u6301Anthropic\u7684Dario Amodei\u7684\u540c\u65f6\uff0c\u79d8\u5bc6\u63a8\u8fdb\u4e0e\u4e94\u89d2\u5927\u697c\u7684\u4ea4\u6613\u3002\u6587\u7ae0\u6697\u793a\u653f\u6cbb\u6350\u6b3e\u5f71\u54cd\u4e86AI\u91c7\u8d2d\u51b3\u7b56\uff0c\u5f15\u53d1\u5bf9\u65b0\u5174AI\u4ea7\u4e1a\u4e2d\u4efb\u4eba\u552f\u4eb2\u73b0\u8c61\u7684\u62c5\u5fe7\u3002",
+    "category": "AI",
+    "rating": 8
+  },
+  {
+    "title_en": "747s and Coding Agents",
+    "title_cn": "747\u98de\u673a\u4e0e\u7f16\u7a0b\u667a\u80fd\u4f53",
+    "url": "https://carlkolon.com/2026/02/27/engineering-747-coding-agents/",
+    "summary_en": "A thought-provoking comparison between piloting Boeing 747s and modern software development with AI coding assistants. The author, a former 747 pilot turned software engineer, draws parallels between aviation safety systems and human-AI collaboration in coding, arguing that effective use of coding agents requires deep domain expertise rather than replacing it.",
+    "summary_cn": "\u4e00\u7bc7\u5c06\u9a7e\u9a76\u6ce2\u97f3747\u98de\u673a\u4e0e\u4f7f\u7528AI\u7f16\u7a0b\u52a9\u624b\u8fdb\u884c\u73b0\u4ee3\u8f6f\u4ef6\u5f00\u53d1\u8fdb\u884c\u7c7b\u6bd4\u7684\u5f15\u4eba\u6df1\u601d\u7684\u6587\u7ae0\u3002\u4f5c\u8005\u66fe\u662f747\u98de\u884c\u5458\uff0c\u540e\u8f6c\u4e3a\u8f6f\u4ef6\u5de5\u7a0b\u5e08\uff0c\u4ed6\u5c06\u822a\u7a7a\u5b89\u5168\u7cfb\u7edf\u4e0e\u7f16\u7a0b\u4e2d\u7684\u4eba\u673a\u534f\u4f5c\u8fdb\u884c\u7c7b\u6bd4\uff0c\u8ba4\u4e3a\u6709\u6548\u4f7f\u7528\u7f16\u7a0b\u667a\u80fd\u4f53\u9700\u8981\u6df1\u539a\u7684\u9886\u57df\u4e13\u4e1a\u77e5\u8bc6\uff0c\u800c\u975e\u53d6\u4ee3\u5b83\u3002",
+    "category": "AI",
+    "rating": 8
+  }
+]

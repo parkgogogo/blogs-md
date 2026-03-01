@@ -1,0 +1,47 @@
+[
+  {
+    "title_en": "Werner Herzog Between Fact and Fiction",
+    "title_cn": "维尔纳·赫尔佐格：事实与虚构之间",
+    "url": "https://www.thenation.com/article/culture/werner-herzog-future-truth/",
+    "summary_en": "An article about German filmmaker Werner Herzog's recent book presenting his idiosyncratic vision of 'truth' and how it defines his worldview and art. The piece explores Herzog's philosophical approach to documentary filmmaking and his concept of 'ecstatic truth'.",
+    "summary_cn": "关于德国电影制作人维尔纳·赫尔佐格新书的评论文章，探讨了他对'真相'的独特哲学观点以及如何定义他的世界观和艺术创作。文章深入分析了赫尔佐格的纪录片拍摄方法和'狂喜真相'概念。",
+    "category": "Other",
+    "rating": 2
+  },
+  {
+    "title_en": "Show HN: Xmloxide – an agent made rust replacement for libxml2",
+    "title_cn": "Show HN: Xmloxide - 用Rust重写的libxml2替代品",
+    "url": "https://github.com/jonwiggins/xmloxide",
+    "summary_en": "A pure Rust reimplementation of libxml2, providing a memory-safe alternative to the widely-used C library for XML parsing. This project aims to offer better security guarantees while maintaining compatibility with existing XML processing workflows.",
+    "summary_cn": "一个用纯Rust重写的libxml2实现，为广泛使用的C语言XML解析库提供内存安全的替代方案。该项目旨在在保持与现有XML处理工作流兼容的同时，提供更好的安全保证。",
+    "category": "Dev",
+    "rating": 6
+  },
+  {
+    "title_en": "Show HN: Now I Get It – Translate scientific papers into interactive webpages",
+    "title_cn": "Show HN: Now I Get It - 将科学论文转化为交互式网页",
+    "url": "https://nowigetit.us",
+    "summary_en": "A tool that converts scientific PDFs into shareable, interactive web pages that explain complex research in plain language. This bridges AI-powered content understanding with modern frontend development to make academic research more accessible.",
+    "summary_cn": "一款将科学PDF转换为可分享的交互式网页的工具，用通俗语言解释复杂研究内容。它结合了AI驱动的内容理解和现代前端开发技术，使学术研究更易理解。",
+    "category": "AI",
+    "rating": 9
+  },
+  {
+    "title_en": "Pentagon chief blocks officers from Ivy League schools and top universities",
+    "title_cn": "五角大楼负责人禁止军官就读常春藤盟校和顶尖大学",
+    "url": "https://fortune.com/2026/02/28/pentagon-officer-education-ivy-league-schools-universities-partners-ai-space/",
+    "summary_en": "The U.S. Defense Department will stop sending officers to professional courses and graduate programs at Ivy League colleges including Harvard, MIT, Yale, Columbia, Brown and Princeton, as well as Carnegie Mellon and Johns Hopkins. The Pentagon chief declared these schools had become 'anti-American'.",
+    "summary_cn": "美国国防部将停止派遣军官参加常春藤盟校（包括哈佛、MIT、耶鲁、哥伦比亚、布朗和普林斯顿）以及卡内基梅隆和约翰霍普金斯的专业课程和研究生项目。五角大楼负责人称这些学校已变得'反美'。",
+    "category": "Other",
+    "rating": 3
+  },
+  {
+    "title_en": "The whole thing was a scam",
+    "title_cn": "整件事都是骗局",
+    "url": "https://garymarcus.substack.com/p/the-whole-thing-was-scam",
+    "summary_en": "Gary Marcus alleges corruption in AI government contracts, claiming OpenAI's Sam Altman secretly worked on a Pentagon deal while publicly supporting Anthropic's Dario Amodei. The article suggests political donations influenced AI procurement decisions, raising concerns about cronyism in the emerging AI industry.",
+    "summary_cn": "Gary Marcus指控AI政府合同存在腐败，声称OpenAI的Sam Altman在公开支持Anthropic的Dario Amodei的同时，秘密推进与五角大楼的交易。文章暗示政治捐款影响了AI采购决策，引发对新兴AI产业中任人唯亲现象的担忧。",
+    "category": "AI",
+    "rating": 8
+  }
+]

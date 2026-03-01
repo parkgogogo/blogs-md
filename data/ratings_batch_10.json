@@ -1,0 +1,42 @@
+[
+  {
+    "id": 2682,
+    "title": "Show HN: Moonshine Open-Weights STT models",
+    "url": "https://github.com/moonshine-ai/moonshine",
+    "rating": 8,
+    "category": "AI/ML - Speech Recognition",
+    "summary": "Fast and accurate automatic speech recognition (ASR) for edge devices. Achieves higher accuracy than OpenAI's Whisper Large v3 while using significantly fewer parameters. Uses 8-bit quantization and ONNX Runtime for efficient edge deployment. Strong technical content covering model optimization and on-device inference."
+  },
+  {
+    "id": 2683,
+    "title": "Mac mini will be made at a new facility in Houston",
+    "url": "https://www.apple.com/newsroom/2026/02/apple-accelerates-us-manufacturing-with-mac-mini-production/",
+    "rating": 3,
+    "category": "Business/Manufacturing",
+    "summary": "Apple announces a 20,000-square-foot advanced manufacturing center in Houston for Mac mini production - first time Mac mini will be produced in the US. Primarily business and supply chain news with limited technical depth. Some manufacturing process details but not substantial technical content for developer audience."
+  },
+  {
+    "id": 2688,
+    "title": "Show HN: Emdash – Open-source agentic development environment",
+    "url": "https://github.com/generalaction/emdash",
+    "rating": 7,
+    "category": "Developer Tools - AI Agents",
+    "summary": "YC W26 open-source agentic development environment that enables running multiple coding agents in parallel with isolated worktrees. Supports any AI provider (OpenAI, Anthropic, etc.). Covers parallel agent orchestration, async development workflows, and agent-native IDE concepts. Good technical depth for AI-assisted development topic."
+  },
+  {
+    "id": 2691,
+    "title": "Mercury 2: The fastest reasoning LLM, powered by diffusion",
+    "url": "https://www.inceptionlabs.ai/blog/introducing-mercury-2",
+    "rating": 9,
+    "category": "AI/ML - LLM Architecture",
+    "summary": "World's first commercial diffusion-based LLM (dLLM) designed for reasoning. 5x faster than leading speed-optimized LLMs with dramatically lower inference costs. Represents a paradigm shift from autoregressive to diffusion-based text generation. Highly novel architecture with significant technical depth on diffusion models for language. Excellent translation candidate."
+  },
+  {
+    "id": 2692,
+    "title": "How we rebuilt Next.js with AI in one week",
+    "url": "https://blog.cloudflare.com/vinext/",
+    "rating": 8,
+    "category": "Web Development - AI-Assisted Engineering",
+    "summary": "Cloudflare's experiment in AI-driven software development: one engineer used Claude Code to rebuild Next.js on Vite in one week. Vinext is a Vite plugin that reimplements the Next.js API surface, achieving 4x faster builds and 57% smaller bundles. Deploys to Cloudflare Workers. Covers framework internals, build tool optimization, and practical AI-assisted development workflows. Strong technical content."
+  }
+]
