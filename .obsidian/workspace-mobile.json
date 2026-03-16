@@ -69,12 +69,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "todos/2026-03-16.md",
+                "file": "todos/2026-03-16 周任务.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2026-03-16"
+              "title": "2026-03-16 周任务"
             }
           }
         ],
@@ -223,15 +223,15 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "65825093a59e9e39",
+  "active": "64ee737ff10fe36b",
   "lastOpenFiles": [
-    "docs/lia/llm-chains-best-practices.md",
+    "lia/llm-chains-best-practices.md",
+    "todos/2026-03-16 周任务.md",
     "/docs/lia/llm-chains-best-practices.md",
     "/docs/lia",
-    "docs/lia",
+    "lia",
     "/docs",
     "privite/Untitled.md",
-    "todos/2026-03-16.md",
     "2026-03-16.md",
     "docs/hacknews/747s-and-coding-agents.md",
     "todos",
