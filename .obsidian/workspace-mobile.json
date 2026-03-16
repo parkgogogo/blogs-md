@@ -55,16 +55,30 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "docs/思/程序员未来思考.md",
+                "file": "docs/hacknews/747s-and-coding-agents.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "程序员未来思考"
+              "title": "747s-and-coding-agents"
+            }
+          },
+          {
+            "id": "64ee737ff10fe36b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "todos/2026-03-16.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2026-03-16"
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 4
       }
     ],
     "direction": "vertical"
@@ -83,7 +97,7 @@
             "autoReveal": false
           },
           "icon": "lucide-folder-closed",
-          "title": "Files"
+          "title": "文件列表"
         }
       },
       {
@@ -198,36 +212,59 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "bases:Create new base": false,
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:新建数据库": false,
       "obsidian-excalidraw-plugin:New drawing": false,
-      "switcher:Open quick switcher": false,
-      "graph:Open graph view": false,
-      "canvas:Create new canvas": false,
-      "daily-notes:Open today's daily note": false,
-      "templates:Insert template": false,
-      "command-palette:Open command palette": false,
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "19c7bbf8743fbff5",
+  "active": "64ee737ff10fe36b",
   "lastOpenFiles": [
-    "docs/思/留下痕迹.md",
-    "docs/思/大模型 toC 问题.md",
-    "docs/思/程序员未来思考.md",
-    "docs/test.md.md",
     "privite/Untitled.md",
-    "README.md",
-    "privite",
-    "docs/作/Blog.next.md",
-    "docs/食/COMMUNE幻师.md",
+    "todos/2026-03-16.md",
+    "2026-03-16.md",
+    "docs/hacknews/747s-and-coding-agents.md",
+    "todos",
+    "docs/hacknews/AI_Data_Center_Financial_Crisis.md",
+    "docs/hacknews/AI_is_a_Gamechanger_for_TLA+_Users.md",
+    "docs/hacknews/allocating-on-the-stack.md",
+    "docs/hacknews/AirSnitch_Demystifying_and_Breaking_Client_Isolation_in_Wi-Fi_Networks.md",
+    "docs/hacknews/AI_is_a_NAND_Maximiser.md",
+    "feeds.json",
+    "docs/clawbot/pi 上下文压缩.md",
+    "docs/clawbot/OpenClaw 深度使用手册：概念、架构与 Claude Code、Codex 的区别.md",
+    "docs/clawbot/StoreBridge（bridge-store）架构设计.md",
+    "docs/clawbot/OpenClaw 深度使用手册（中文）：把它当成 agent runtime 来用.md",
+    "docs/clawbot/OpenClaw 入门与排障（V2）：从能回消息到稳定跑任务.md",
+    "docs/clawbot/pi 深度解析.md",
+    "hacknews/processed_urls.json",
+    "hacknews/selected_articles.json",
+    "hacknews/top_10_articles.json",
+    "hacknews/candidates_20.json",
+    "hacknews/candidates_100.json",
+    "hacknews",
+    "docs/clawbot/OpenClaw 使用指南：30 分钟部署、Telegram 接入与定时简报.md",
+    "docs/clawbot/pi 上下文 tree.md",
+    "docs/clawbot/OpenClaw 可靠运行指南：Gateway 运维、Workspace 记忆、Cron 自动化.md",
+    "docs/clawbot/pi 提示词.md",
+    "docs/clawbot/supabase auth 指南.md",
+    "data/top_12_for_translation.json",
+    "data/ratings_batch_3.json",
+    "docs/clawbot/OpenClaw handbook (EN)：runtime, concepts, and comparisons.md",
+    "docs/hacknews/what-claude-code-chooses.md",
+    "docs/hacknews/Gwtar_a_static_efficient_single-file_HTML_format.md",
+    "docs/hacknews/Thoughts_on_AI_Progress_Dec_2025.md",
+    "docs/hacknews/Refinement_without_Specification.md",
+    "docs/hacknews/Scent_In_Silico.md",
     "attachment/IMG_1946.jpeg",
     "attachment/IMG_1945.webp",
     "attachment/IMG_1946.webp",
-    "docs/行/Feeds.md",
     "attachment/IMG_1942.webp",
-    "attachment/IMG_1941.webp",
-    "docs/食",
-    "docs/行/掌控 Feeds.md",
-    "docs/行"
+    "attachment/IMG_1941.webp"
   ]
 }

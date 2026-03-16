@@ -20,8 +20,21 @@
               "icon": "lucide-file",
               "title": "iOS-Safari-文本自动放大"
             }
+          },
+          {
+            "id": "481840c1d20f3e06",
+            "type": "leaf",
+            "state": {
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.11.7"
+              },
+              "icon": "lucide-book-up",
+              "title": "Release Notes 1.11.7"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -74,8 +87,7 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -171,6 +183,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:Create new base": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -181,7 +194,7 @@
       "obsidian-excalidraw-plugin:New drawing": false
     }
   },
-  "active": "a934faafdfc76664",
+  "active": "481840c1d20f3e06",
   "lastOpenFiles": [
     "docs/前端踩坑/Safari-重绘残影.md",
     "docs/Thinking/程序员未来思考.md",
