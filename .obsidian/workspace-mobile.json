@@ -67,14 +67,14 @@
             "id": "64ee737ff10fe36b",
             "type": "leaf",
             "state": {
-              "type": "diff-view",
+              "type": "markdown",
               "state": {
-                "aFile": "todos/2026-03-16.md",
-                "bFile": "todos/2026-03-16.md",
-                "aRef": ""
+                "file": "todos/2026-03-16 周任务.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "git-pull-request",
-              "title": "Diff: 2026-03-16"
+              "icon": "lucide-file",
+              "title": "2026-03-16 周任务"
             }
           }
         ],
